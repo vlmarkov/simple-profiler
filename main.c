@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 
+#ifdef STATIC
 #include "override_malloc.h"
+#endif /* STATIC */
 
 int main(int argc, char const *argv[])
 {
@@ -18,14 +21,12 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-
     char *realloc_ptr = (char *)realloc(NULL, sizeof(char) * 333);
     if (!realloc_ptr)
     {
         fprintf(stderr, "Can't allocate memory, by calloc()\n");
         return -1;
     }
-
 
     realloc_ptr = (char *)realloc(realloc_ptr, sizeof(char) * 444);
     if (!realloc_ptr)
@@ -38,7 +39,10 @@ int main(int argc, char const *argv[])
     free(calloc_ptr);
     free(malloc_ptr);
 
+
+#ifdef STATIC
     show_heap_usage();
-    
+#endif /* STATIC */
+
     return 0;
 }
