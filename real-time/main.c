@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef STATIC
-#include "override_malloc.h"
-#endif /* STATIC */
-
 int main(int argc, char const *argv[])
 {
     char *malloc_ptr = (char *)malloc(sizeof(char) * 111);
@@ -38,11 +34,6 @@ int main(int argc, char const *argv[])
     free(realloc_ptr);
     free(calloc_ptr);
     free(malloc_ptr);
-
-
-#ifdef STATIC
-    show_heap_usage();
-#endif /* STATIC */
 
     return 0;
 }
