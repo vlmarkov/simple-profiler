@@ -16,15 +16,6 @@ typedef struct
     size_t size;
 } mem_header_t;
 
-static uint8_t  reserved_memory[RESERVED_SIZE] = { 0 };
-static uint64_t allocated_bytes;
-
-/*****************************************************************************/
-/* The keyword __thread: is used to define thread-local variables.           */
-/* This helps to avoid infinite recursive call                               */
-/*****************************************************************************/
-static __thread int no_hook;
-
 /*****************************************************************************/
 /* Hooking glibc function poninters                                          */
 /*****************************************************************************/
@@ -32,6 +23,15 @@ static void *(*real_calloc) (size_t, size_t) = NULL;
 static void *(*real_malloc) (size_t)         = NULL;
 static void *(*real_realloc)(void *, size_t) = NULL;
 static void  (*real_free)   (void *)         = NULL;
+
+/*****************************************************************************/
+/* The keyword '__thread': is used to define thread-local variables.         */
+/* This helps to avoid infinite recursive call                               */
+/*****************************************************************************/
+static __thread int no_hook;
+
+static uint8_t  reserved_memory[RESERVED_SIZE] = { 0 };
+static uint64_t allocated_bytes;
 
 /*****************************************************************************/
 /* __attribute__((constructor)) syntax:                                      */
@@ -50,6 +50,27 @@ static void __attribute__((constructor)) init(void)
     allocated_bytes = 0;
 
     fprintf(stderr, "ADDRESS \tNAME    SIZE\tPOINTER  \tHEAP\n");
+    fprintf(stderr, "------- \t----    ----\t-------  \t0\n");
+}
+
+/*****************************************************************************/
+/* __attribute__((destructor)) syntax:                                       */
+/* This particular GCC syntax, when used with a function,                    */
+/* executes the same function at the end of the program,                     */
+/* i.e before exit() function.                                               */
+/*****************************************************************************/
+static void __attribute__((destructor)) deinit(void)
+{
+    fprintf(stderr, "------- \t----    ----\t-------  \t%zu\n", allocated_bytes);
+}
+
+static void print_log(const char  *func,
+                      const void  *caller,
+                      const void  *addr,
+                      const size_t size)
+{
+    fprintf(stderr, "%p\t%s\t%zu\t%p\t%zu\n",
+        caller, func, size, addr, allocated_bytes);
 }
 
 /*****************************************************************************/
@@ -109,17 +130,10 @@ static void *decrease_heap_usage(void *ptr)
 
 static size_t get_heap_usage_by_ptr(void *ptr)
 {
-    return ((mem_header_t *)(ptr))->size;
+    return ((mem_header_t *)(ptr - sizeof(mem_header_t)))->size;
 }
 
-static void print_log(const char  *func,
-                      const void  *caller,
-                      const void  *addr,
-                      const size_t size)
-{
-    fprintf(stderr, "%p\t%s(%zu)\t%p\t%zu\n",
-        caller, func, size, addr, allocated_bytes);
-}
+/*****************************************************************************/
 
 void *malloc(size_t size)
 {
@@ -134,7 +148,7 @@ void *malloc(size_t size)
         ret_ptr = increase_heap_usage(ret_ptr, size, false);
     }
 
-    print_log("malloc  ", __builtin_return_address(0), ret_ptr, size);
+    print_log(__FUNCTION__, __builtin_return_address(0), ret_ptr, size);
 
     no_hook = 0;
 
@@ -159,7 +173,7 @@ void *calloc(size_t nmemb, size_t size)
         ret_ptr = increase_heap_usage(ret_ptr, (nmemb * size), false);
     }
 
-    print_log("calloc  ", __builtin_return_address(0), ret_ptr, size);
+    print_log(__FUNCTION__, __builtin_return_address(0), ret_ptr, size);
 
     no_hook = 0;
 
@@ -186,7 +200,7 @@ void *realloc(void *ptr, size_t size)
         ret_ptr = increase_heap_usage(ret_ptr, size, is_realloc);
     }
 
-    print_log("realloc ", __builtin_return_address(0), ret_ptr, size);
+    print_log(__FUNCTION__, __builtin_return_address(0), ret_ptr, size);
 
 
     no_hook = 0;
@@ -199,9 +213,9 @@ void free(void *ptr)
     if (!ptr)
         return;
 
-    ptr = decrease_heap_usage(ptr);
+    print_log(__FUNCTION__, __builtin_return_address(0), ptr, get_heap_usage_by_ptr(ptr));
 
-    print_log("free    ", __builtin_return_address(0), ptr, get_heap_usage_by_ptr(ptr));
+    ptr = decrease_heap_usage(ptr);
 
     (*real_free)(ptr);
 }

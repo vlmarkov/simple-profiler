@@ -1,10 +1,13 @@
-all: main lib_alloc
+all: sample hook_malloc
 
-main: main.c
-	gcc -g -Wall -O2 -o main main.c -rdynamic
+sample:
+	mkdir -p build
+	gcc -g -Wall -O2 -o build/sample samples/sample.c -std=c11
+	gcc -g -Wall -O2 -o build/leak-sample samples/leak-sample.c -std=c11
 
-lib_alloc: lib_alloc.c
-	gcc -Wall lib_alloc.c -fPIC -shared -o lib_alloc.so -ldl -rdynamic -pthread -std=c11
+hook_malloc:
+	mkdir -p build
+	gcc -Wall src/hook_malloc.c -fPIC -shared -o build/lib_hook_malloc.so -ldl -rdynamic -pthread -std=c11
 
 clean:
-	rm -f main *.so
+	rm -Rf build
