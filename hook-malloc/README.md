@@ -1,7 +1,7 @@
 # This simple-utility helps to detected memory leak
 * By overriding standard glibc malloc(), calloc(), realloc(), free() functions
 
-* Sample output
+Sample output:
 
 ADDRESS | NAME | SIZE | POINTER | HEAP
 --- | --- | --- | --- | ---
