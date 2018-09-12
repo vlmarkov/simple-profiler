@@ -1,13 +1,13 @@
 #!/bin/bash
 
-LD_PRELOAD=$PWD/build/lib_hook_malloc.so build/sample 2> build/log
+LD_PRELOAD=$PWD/build/lib_hook_malloc.so build/sample 2> $PWD/log
 
 echo "Running: sample..."
-cat build/log
+cat $PWD/log
 echo "Running: sample [complete]"
 
-LD_PRELOAD=$PWD/build/lib_hook_malloc.so build/leak-sample 2> build/log
+LD_PRELOAD=$PWD/build/lib_hook_malloc.so build/leak-sample 2> $PWD/log
 
 echo "Running: leak-sample..."
-cat build/log
+cat $PWD/log
 echo "Running: leak-sample [complete]"

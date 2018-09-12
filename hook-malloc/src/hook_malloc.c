@@ -49,8 +49,8 @@ static void __attribute__((constructor)) init(void)
     no_hook = 0;
     allocated_bytes = 0;
 
-    fprintf(stderr, "ADDRESS \tNAME    SIZE\tPOINTER  \tHEAP\n");
-    fprintf(stderr, "------- \t----    ----\t-------  \t0\n");
+    //fprintf(stderr, "ADDRESS \tNAME    SIZE\tPOINTER  \tHEAP\n");
+    //fprintf(stderr, "------- \t----    ----\t-------  \t0\n");
 }
 
 /*****************************************************************************/
@@ -61,7 +61,7 @@ static void __attribute__((constructor)) init(void)
 /*****************************************************************************/
 static void __attribute__((destructor)) deinit(void)
 {
-    fprintf(stderr, "------- \t----    ----\t-------  \t%zu\n", allocated_bytes);
+    //fprintf(stderr, "------- \t----    ----\t-------  \t%zu\n", allocated_bytes);
 }
 
 static void print_log(const char  *func,
@@ -69,7 +69,7 @@ static void print_log(const char  *func,
                       const void  *addr,
                       const size_t size)
 {
-    fprintf(stderr, "%p\t%s\t%zu\t%p\t%zu\n",
+    fprintf(stderr, "%p %s %zu %p %zu\n",
         caller, func, size, addr, allocated_bytes);
 }
 
