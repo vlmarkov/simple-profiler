@@ -10,7 +10,7 @@ class Observer
 {
     public:
         Observer();
-        ~Observer();
+        virtual ~Observer() = 0;
 
         virtual void update(const Event& event) = 0;
 };
