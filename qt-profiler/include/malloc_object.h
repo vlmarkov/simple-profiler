@@ -1,5 +1,5 @@
-#ifndef MALLOCOBJECT_H
-#define MALLOCOBJECT_H
+#ifndef MALLOC_OBJECT_H
+#define MALLOC_OBJECT_H
 
 #include <QString>
 
@@ -17,4 +17,4 @@ class MallocObject
         QString _ptr;
 };
 
-#endif // MALLOCOBJECT_H
+#endif // MALLOC_OBJECT_H

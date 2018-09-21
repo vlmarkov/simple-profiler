@@ -1,4 +1,4 @@
-#include "mallocobject.h"
+#include "include/malloc_object.h"
 
 
 MallocObject::MallocObject(QString addr,

@@ -3,21 +3,21 @@
 
 #include <stdlib.h>
 
-#include "model.h"
+#include "include/memory_model.h"
 
 
-Model::Model()
+MemoryModel::MemoryModel()
 {
     libFileName_ = "lib_hook_malloc.so";
     logFileName_ = "log";
 }
 
-Model::~Model()
+MemoryModel::~MemoryModel()
 {
     ;
 }
 
-void Model::runMemProfiler(const QString& str)
+void MemoryModel::processRequest(const QString& str)
 {
     QMap<QString, MallocObject> leakMap;
 
@@ -27,8 +27,8 @@ void Model::runMemProfiler(const QString& str)
         this->readMallocUsage_(leakMap);
         if (leakMap.size() == 0)
         {
-            result_ = "There are no possible memory leaks";
-            this->notifyObserver(Event::FindFiles);
+            this->result_.addData(qMakePair(ViewType::source , QString("There are no possible memory leaks")));
+            this->notifyObserver(Event::succses);
             return;
         }
 
@@ -36,20 +36,20 @@ void Model::runMemProfiler(const QString& str)
     }
     catch (QString& err)
     {
-        result_ = err;
-        this->notifyObserver(Event::FindFiles);
+        result_.addData(qMakePair(ViewType::error , err));
+        this->notifyObserver(Event::fail);
         return;
     }
 
-    this->notifyObserver(Event::FindFiles);
+    this->notifyObserver(Event::succses);
 }
 
-QString Model::getMemProfillerResult(void)
+Result MemoryModel::getResult()
 {
     return result_;
 }
 
-void Model::collectMallocUsage_(const QString& elfName)
+void MemoryModel::collectMallocUsage_(const QString& elf)
 {
     QString arg;
 
@@ -57,17 +57,17 @@ void Model::collectMallocUsage_(const QString& elfName)
     arg += "./";
     arg += this->libFileName_;
     arg += " ";
-    arg += elfName;
+    arg += elf;
     arg += " 2>";
     arg += this->logFileName_;
 
     if (system(arg.toStdString().c_str()) != 0)
     {
-        throw QString("Warning: Can't collect malloc usage for: " + elfName);
+        throw QString("Warning: Can't collect malloc usage for: " + elf);
     }
 }
 
-void Model::readMallocUsage_(QMap<QString, MallocObject>& mallocMap)
+void MemoryModel::readMallocUsage_(QMap<QString, MallocObject>& map)
 {
     const QRegExp rx("[ ]");
 
@@ -87,7 +87,7 @@ void Model::readMallocUsage_(QMap<QString, MallocObject>& mallocMap)
         if (argsList.at(MallocObjectArg::fun) == "free")
         {
             auto key = argsList.at(MallocObjectArg::ptr);
-            mallocMap.remove(key);
+            map.remove(key);
         }
 
         if (argsList.at(MallocObjectArg::fun) == "malloc" || argsList.at(MallocObjectArg::fun) == "calloc")
@@ -98,7 +98,7 @@ void Model::readMallocUsage_(QMap<QString, MallocObject>& mallocMap)
                                       argsList.at(MallocObjectArg::size),
                                       argsList.at(MallocObjectArg::ptr));
 
-            mallocMap.insert(key, value);
+            map.insert(key, value);
         }
 
         if (argsList.at(MallocObjectArg::fun) == "realloc")
@@ -109,8 +109,8 @@ void Model::readMallocUsage_(QMap<QString, MallocObject>& mallocMap)
                                       argsList.at(MallocObjectArg::size),
                                       argsList.at(MallocObjectArg::ptr));
 
-            mallocMap.remove(key);
-            mallocMap.insert(key, value);
+            map.remove(key);
+            map.insert(key, value);
         }
     }
 
@@ -124,25 +124,25 @@ void Model::readMallocUsage_(QMap<QString, MallocObject>& mallocMap)
     }
 }
 
-void Model::leakToSourceCode_(const QMap<QString, MallocObject>& leakMap, const QString& elfName)
+void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, const QString& elf)
 {
     const QRegExp rx("[:]");
 
-    QString leakLog;
+    Result res;
 
-    for (auto it = leakMap.begin(); it != leakMap.end(); ++it)
+    for (auto it : map)
     {
         QString arg;
         arg += ("addr2line -e ");
-        arg += elfName;
+        arg += elf;
         arg += " ";
-        arg += it.value()._addr;
+        arg += it._addr;
         arg += " > ";
         arg += this->logFileName_;
 
         if (system(arg.toStdString().c_str()) != 0)
         {
-            throw QString("Warning: Can't process addr2line for: " + elfName);
+            throw QString("Warning: Can't process addr2line for: " + elf);
         }
 
         QFile addr2LineFile(this->logFileName_);
@@ -157,9 +157,9 @@ void Model::leakToSourceCode_(const QMap<QString, MallocObject>& leakMap, const 
             auto line     = in.readLine();
             auto argsList = line.split(rx, QString::SkipEmptyParts);
 
-            leakLog += line + "\n";
+            res.addData(qMakePair(ViewType::source, line));
 
-            this->readSourceCode_(argsList.at(0), argsList.at(1).toInt(), leakLog);
+            this->readSourceCode_(argsList.at(0), argsList.at(1).toInt(), res);
         }
 
         // Close the file
@@ -172,42 +172,38 @@ void Model::leakToSourceCode_(const QMap<QString, MallocObject>& leakMap, const 
         }
     }
 
-    this->result_ = leakLog;
+    this->result_ = res;
 }
 
-void Model::readSourceCode_(const QString& pathTo, const int line, QString& leakLog)
+void MemoryModel::readSourceCode_(const QString& path, const int ln, Result& res)
 {
-    // Get path to source
-    QFile srcFile(pathTo);
-    if (!srcFile.open(QIODevice::ReadOnly | QFile::Text))
+    // Get path to source file and open it
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QFile::Text))
     {
-        throw QString("Warning: Can't open file: " + srcFile.errorString());
+        throw QString("Warning: Can't open file: " + file.errorString());
     }
 
-    leakLog += "\n";
-
     int cnt = 1;
-    QTextStream in(&srcFile);
+    QTextStream in(&file);
     while (!in.atEnd())
     {
         auto str = in.readLine();
 
-        if ((line - 3 < cnt) && (line + 3 > cnt))
+        if ((ln - 3 < cnt) && (ln + 3 > cnt))
         {
-            if (line == cnt)
-                leakLog += "!-->";
+            if (ln == cnt)
+            {
+                res.addData(qMakePair(ViewType::leak, QString(QString::number(cnt) + "  " + str)));
+            }
             else
-                leakLog += "    ";
-
-            leakLog += QString::number(cnt);
-            leakLog += " ";
-            leakLog += str;
-            leakLog += "\n";
+            {
+                res.addData(qMakePair(ViewType::line, QString(QString::number(cnt) + "  " + str)));
+            }
          }
          cnt++;
     }
-    leakLog += "\n";
 
-    // Close the file
-    srcFile.close();
+    // Close the source file
+    file.close();
 }
