@@ -5,13 +5,15 @@
 #include <QDebug>
 
 
-MemoryView::MemoryView(Model* model, Controller* controller, BaseProfiler* baseProf) :
+MemoryView::MemoryView(Model&        model,
+                       Controller&   controller,
+                       BaseProfiler& baseProf):
     model_(model),
     controller_(controller),
     baseProf_(baseProf)
 {
-    model_->addObserver(this);
-    controller_->addObserver(this);
+    model_.Observable::add(this);
+    controller_.Observable::add(this);
 }
 
 MemoryView::~MemoryView()
@@ -25,73 +27,75 @@ void MemoryView::update(const Event& event)
     {
         case Event::fail:
         {
-            baseProf_->setResult(toHtml_(model_->getResult()));
+            baseProf_.setResult(toHtml_(model_.getResult()));
             break;
         }
         case Event::succses:
         {
-            baseProf_->setResult(toHtml_(model_->getResult()));
+            baseProf_.setResult(toHtml_(model_.getResult()));
             break;
         }
     }
 }
 
-QString MemoryView::toHtml_(Result res)
+QString MemoryView::toHtml_(Result result) noexcept
 {
     QString htmlStr;
 
-    auto result = res.getData();
+    auto resultData = result.get();
 
-    htmlStr += "<section>";
-    htmlStr += "<p></p>";
-    htmlStr += "<p></p>";
+    auto header = true;
 
-    auto first = true;
+    htmlStr += "<section><p></p><p></p>";
 
-    for (auto i = result.begin(); i != result.end(); i++)
+    for (auto i : resultData)
     {
-        if (i->first == ViewType::source)
+        switch(i.first)
         {
-            if (!first)
+            case ViewType::source:
             {
-                htmlStr += "</table>";
-                htmlStr += "<p></p>";
+                if (!header)
+                {
+                    htmlStr += "</table>";
+                    htmlStr += "<p></p>";
+                }
+
+                header = false;
+
+                htmlStr += "<table border = 1 bgcolor=\"white\">";
+                htmlStr += "<tr><th>";
+                htmlStr += "**** " + (i.second) + " ****";
+                htmlStr += "</th></tr>";
+
+                htmlStr += "<tr>";
+
+                break;
             }
 
-            first = false;
+            case ViewType::leak:
+            {
+                htmlStr += "<tr><td style='color:red'>";
+                htmlStr += (i.second) + "      ::POSSIBLE MEMORY LEAK::";
+                htmlStr += "</td></tr>";
 
+                break;
+            }
 
-            htmlStr += "<table border = 1 bgcolor=\"white\">";
-            htmlStr += "<tr>";
-            htmlStr += "<th>";
-            htmlStr += "**** " + ((i)->second) + " ****";
-            htmlStr += "</th>";
-            htmlStr += "</tr>";
+            case ViewType::line:
+            {
+                htmlStr += "<tr><td>" + (i.second) + "</td></tr>";
+                break;
+            }
 
-            htmlStr += "<tr>";
-        }
-        if (i->first == ViewType::leak)
-        {
-            htmlStr += "<tr>";
-            htmlStr += "<td style='color:red'>";
-            htmlStr += (i->second) + "      ::POSSIBLE MEMORY LEAK::";
-            htmlStr += "</td>";
-            htmlStr += "</tr>";
-        }
-        if (i->first == ViewType::line)
-        {
-            htmlStr += "<tr>";
-            htmlStr += "<td>";
-            htmlStr += (i->second);
-            htmlStr += "</td>";
-            htmlStr += "</tr>";
+            default:
+            {
+                break;
+            }
         }
     }
 
     htmlStr += "</table>";
-
-    htmlStr += "<p></p>";
-    htmlStr += "</section>";
+    htmlStr += "<p></p></section>";
 
     return htmlStr;
 }

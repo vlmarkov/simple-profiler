@@ -1,6 +1,3 @@
-#ifndef EVENT_H
-#define EVENT_H
+#pragma once
 
 enum class Event { fail, succses };
-
-#endif // EVENT_H

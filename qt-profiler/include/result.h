@@ -1,5 +1,4 @@
-#ifndef RESULT_H
-#define RESULT_H
+#pragma once
 
 #include <QVector>
 #include <QString>
@@ -10,15 +9,13 @@
 class Result
 {
     public:
-        Result();
+        Result() = default;
         ~Result();
 
-        QVector<QPair<ViewType, QString>> getData();
-        void addData(const QPair<ViewType, QString>& dataPair);
-        void clearData();
+        QVector<QPair<ViewType, QString>> get() noexcept;
+        void add(const QPair<ViewType, QString>& dataPair) noexcept;
+        void clear() noexcept;
 
     private:
         QVector<QPair<ViewType, QString>> dataVector_;
 };
-
-#endif // RESULT_H

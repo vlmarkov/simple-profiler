@@ -1,5 +1,4 @@
-#ifndef MALLOC_OBJECT_H
-#define MALLOC_OBJECT_H
+#pragma once
 
 #include <QString>
 
@@ -8,13 +7,11 @@ enum MallocObjectArg { addr, fun, size, ptr };
 class MallocObject
 {
     public:
-        MallocObject(QString addr, QString fun, QString size, QString ptr);
+        MallocObject(QString addr, QString fun, QString sz, QString ptr) noexcept;
         ~MallocObject();
 
-        QString _addr;
-        QString _fun;
-        QString _size;
-        QString _ptr;
+        QString address;
+        QString function;
+        QString size;
+        QString pointer;
 };
-
-#endif // MALLOC_OBJECT_H

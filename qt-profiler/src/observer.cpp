@@ -3,11 +3,6 @@
 #include <QString>
 
 
-Observer::Observer()
-{
-    ;
-}
-
 Observer::~Observer()
 {
     ;
@@ -15,26 +10,21 @@ Observer::~Observer()
 
 /*****************************************************************************/
 
-Observable::Observable()
-{
-    ;
-}
-
 Observable::~Observable()
 {
     ;
 }
 
-void Observable::addObserver(Observer* observer)
+void Observable::add(Observer* observer)
 {
     if (!observer)
         throw(QString("Can't add observer"));
 
-    this->observers_.push_back(observer);
+    observers_.push_back(observer);
 }
 
-void Observable::notifyObserver(const Event& event)
+void Observable::notify(const Event& event)
 {
-    for (auto i : this->observers_)
+    for (auto i : observers_)
         i->update(event);
 }

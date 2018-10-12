@@ -1,5 +1,4 @@
-#ifndef MODEL_H
-#define MODEL_H
+#pragma once
 
 #include <QString>
 
@@ -8,15 +7,13 @@
 #include "view_type.h"
 
 
-// Abstract base class
+// Pure abstract base class
 class Model : public Observable
 {
     public:
-        Model();
+        Model() = default;
         virtual ~Model();
 
         virtual void processRequest(const QString& str) = 0;
         virtual Result getResult() = 0;
 };
-
-#endif // MODEL_H

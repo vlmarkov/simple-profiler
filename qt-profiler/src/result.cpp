@@ -1,27 +1,22 @@
 #include "include/result.h"
 
 
-Result::Result()
-{
-    ;
-}
-
 Result::~Result()
 {
     ;
 }
 
-QVector<QPair<ViewType, QString>> Result::getData()
+QVector<QPair<ViewType, QString>> Result::get() noexcept
 {
     return dataVector_;
 }
 
-void Result::addData(const QPair<ViewType, QString>& dataPair)
+void Result::add(const QPair<ViewType, QString>& rhs) noexcept
 {
-    dataVector_.push_back(dataPair);
+    dataVector_.push_back(rhs);
 }
 
-void Result::clearData()
+void Result::clear() noexcept
 {
     dataVector_.clear();
 }

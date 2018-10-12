@@ -1,5 +1,4 @@
-#ifndef OBSERVER_H
-#define OBSERVER_H
+#pragma once
 
 #include <QVector>
 
@@ -9,7 +8,7 @@
 class Observer
 {
     public:
-        Observer();
+        Observer() = default;
         virtual ~Observer() = 0;
 
         virtual void update(const Event& event) = 0;
@@ -18,14 +17,12 @@ class Observer
 class Observable
 {
     public:
-        Observable();
+        Observable() = default;
         ~Observable();
 
-        void addObserver(Observer* observer);
-        void notifyObserver(const Event& event);
+        void add(Observer* observer);
+        void notify(const Event& event);
 
     private:
         QVector<Observer*> observers_;
 };
-
-#endif // OBSERVER_H

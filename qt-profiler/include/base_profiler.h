@@ -1,5 +1,4 @@
-#ifndef BASE_PROFILER_H
-#define BASE_PROFILER_H
+#pragma once
 
 #include <QObject>
 #include <QString>
@@ -11,14 +10,14 @@ class BaseProfiler : public QObject
     Q_OBJECT
 
     public:
-        BaseProfiler();
+        BaseProfiler() = default;
         ~BaseProfiler();
 
-        Q_INVOKABLE void analyze_memory(const QString& str);
-        Q_INVOKABLE void analyze_perfomance(const QString& str);
+        Q_INVOKABLE void memoryCheck(const QString& str);
+        Q_INVOKABLE void perfomanceCheck(const QString& str);
 
-        QString getResult();
-        void setResult(const QString str);
+        QString getResult() noexcept;
+        void setResult(const QString str) noexcept;
 
     signals:
         void resultChanged();
@@ -27,5 +26,3 @@ class BaseProfiler : public QObject
         Q_PROPERTY(QString getResult READ getResult NOTIFY resultChanged)
         QString result_;
 };
-
-#endif // BASE_PROFILER_H

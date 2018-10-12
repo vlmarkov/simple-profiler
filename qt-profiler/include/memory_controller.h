@@ -8,13 +8,13 @@
 class MemoryController : public Controller
 {
     public:
-        MemoryController(Model* model);
-        ~MemoryController();
+        MemoryController(Model& model) noexcept;
+        ~MemoryController() override;
 
-        void processRequest(const QString& str);
+        void processRequest(const QString& str) override;
 
     private:
-        Model* model_;
+        Model& model_;
 };
 
 #endif // MEMORY_CONTROLLER_H

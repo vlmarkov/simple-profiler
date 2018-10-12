@@ -5,56 +5,44 @@
 
 #include <QDebug>
 
+#include <memory>
 
-BaseProfiler::BaseProfiler()
-{
-    ;
-}
 
 BaseProfiler::~BaseProfiler()
 {
     ;
 }
 
-void BaseProfiler::analyze_memory(const QString& str)
+void BaseProfiler::memoryCheck(const QString& request)
 {
-    Model      *model      = new MemoryModel();
-    Controller *controller = new MemoryController(model);
-    View       *view       = new MemoryView(model, controller, this);
+    auto model      = std::make_unique<MemoryModel>();
+    auto controller = std::make_unique<MemoryController>(*model.get());
+    auto view       = std::make_unique<MemoryView>(*model.get(), *controller.get(), *this);
 
-    controller->processRequest(str);
+    controller->processRequest(request);
 
-    // view will emit a signal
-
-    delete model;
-    delete controller;
-    delete view;
+    // View instance will emit a signal
 }
 
-void BaseProfiler::analyze_perfomance(const QString& str)
+void BaseProfiler::perfomanceCheck(const QString& request)
 {
     // Comming soon!
+/*
+    auto model      = std::make_unique<PerfomanceModel>();
+    auto controller = std::make_unique<PerfomanceController>(*model.get());
+    auto view       = std::make_unique<PerfomanceView>(*model.get(), *controller.get(), *this);
 
-    //model_      = new PerfomanceModel();
-    //controller_ = new PerfomanceController(model);
-    //view_       = new PerfomanceView(model, controller, this);
-
-    //controller_->processRequest(str);
-
-    // view will emit a signal
-
-    //delete model;
-    //delete controller;
-    //delete view;
-    return;
+    controller->processRequest(request)
+*/
+    // View instance will emit a signal
 }
 
-QString BaseProfiler::getResult()
+QString BaseProfiler::getResult() noexcept
 {
     return result_;
 }
 
-void BaseProfiler::setResult(const QString str)
+void BaseProfiler::setResult(const QString str) noexcept
 {
     result_ = str;
     emit resultChanged();

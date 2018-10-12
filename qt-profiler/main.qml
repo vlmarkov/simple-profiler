@@ -43,7 +43,7 @@ ApplicationWindow {
         title: "Please choose a file"
         onAccepted:
         {
-            onAccepted: baseProfiler.analyze_memory(memoryDialog.fileUrl.toString().replace("file://", ""))
+            onAccepted: baseProfiler.memoryCheck(memoryDialog.fileUrl.toString().replace("file://", ""))
         }
     }
 

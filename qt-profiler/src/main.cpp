@@ -4,6 +4,7 @@
 
 #include "include/base_profiler.h"
 
+
 int main(int argc, char *argv[])
 {
     QGuiApplication::setApplicationName("Basic Profiling Tool");

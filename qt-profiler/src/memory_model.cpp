@@ -6,10 +6,11 @@
 #include "include/memory_model.h"
 
 
-MemoryModel::MemoryModel()
+MemoryModel::MemoryModel() noexcept :
+    libFileName_(QString("lib_hook_malloc.so")),
+    logFileName_(QString("log"))
 {
-    libFileName_ = "lib_hook_malloc.so";
-    logFileName_ = "log";
+    ;
 }
 
 MemoryModel::~MemoryModel()
@@ -27,8 +28,8 @@ void MemoryModel::processRequest(const QString& str)
         this->readMallocUsage_(leakMap);
         if (leakMap.size() == 0)
         {
-            this->result_.addData(qMakePair(ViewType::source , QString("There are no possible memory leaks")));
-            this->notifyObserver(Event::succses);
+            result_.add(qMakePair(ViewType::source , QString("There are no possible memory leaks")));
+            Observable::notify(Event::succses);
             return;
         }
 
@@ -36,15 +37,15 @@ void MemoryModel::processRequest(const QString& str)
     }
     catch (QString& err)
     {
-        result_.addData(qMakePair(ViewType::error , err));
-        this->notifyObserver(Event::fail);
+        result_.add(qMakePair(ViewType::error , err));
+        Observable::notify(Event::fail);
         return;
     }
 
-    this->notifyObserver(Event::succses);
+    Observable::notify(Event::succses);
 }
 
-Result MemoryModel::getResult()
+Result MemoryModel::getResult() noexcept
 {
     return result_;
 }
@@ -128,15 +129,15 @@ void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, cons
 {
     const QRegExp rx("[:]");
 
-    Result res;
+    Result result;
 
-    for (auto it : map)
+    for (auto iter : map)
     {
         QString arg;
         arg += ("addr2line -e ");
         arg += elf;
         arg += " ";
-        arg += it._addr;
+        arg += iter.address;
         arg += " > ";
         arg += this->logFileName_;
 
@@ -151,15 +152,15 @@ void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, cons
             throw QString("Warning: Can't open file: " + addr2LineFile.errorString());
         }
 
-        QTextStream in(&addr2LineFile);
-        while (!in.atEnd())
+        QTextStream inTextStream(&addr2LineFile);
+        while (!inTextStream.atEnd())
         {
-            auto line     = in.readLine();
+            auto line     = inTextStream.readLine();
             auto argsList = line.split(rx, QString::SkipEmptyParts);
 
-            res.addData(qMakePair(ViewType::source, line));
+            result.add(qMakePair(ViewType::source, line));
 
-            this->readSourceCode_(argsList.at(0), argsList.at(1).toInt(), res);
+            readSourceCode_(argsList.at(0), argsList.at(1).toInt(), result);
         }
 
         // Close the file
@@ -172,35 +173,30 @@ void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, cons
         }
     }
 
-    this->result_ = res;
+    result_ = result;
 }
 
-void MemoryModel::readSourceCode_(const QString& path, const int ln, Result& res)
+void MemoryModel::readSourceCode_(const QString& path, const int ln, Result& result)
 {
     // Get path to source file and open it
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QFile::Text))
-    {
         throw QString("Warning: Can't open file: " + file.errorString());
-    }
 
-    int cnt = 1;
-    QTextStream in(&file);
-    while (!in.atEnd())
+    auto cnt = 1;
+    QTextStream inTextStream(&file);
+    while (!inTextStream.atEnd())
     {
-        auto str = in.readLine();
+        auto tmp = inTextStream.readLine();
 
         if ((ln - 3 < cnt) && (ln + 3 > cnt))
         {
             if (ln == cnt)
-            {
-                res.addData(qMakePair(ViewType::leak, QString(QString::number(cnt) + "  " + str)));
-            }
+                result.add(qMakePair(ViewType::leak, QString(QString::number(cnt) + "  " + tmp)));
             else
-            {
-                res.addData(qMakePair(ViewType::line, QString(QString::number(cnt) + "  " + str)));
-            }
+                result.add(qMakePair(ViewType::line, QString(QString::number(cnt) + "  " + tmp)));
          }
+
          cnt++;
     }
 

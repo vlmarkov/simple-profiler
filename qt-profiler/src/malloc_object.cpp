@@ -3,9 +3,12 @@
 
 MallocObject::MallocObject(QString addr,
                            QString fun,
-                           QString size,
-                           QString ptr) :
-    _addr(addr), _fun(fun), _size(size), _ptr(ptr)
+                           QString sz,
+                           QString ptr) noexcept :
+    address(addr),
+    function(fun),
+    size(sz),
+    pointer(ptr)
 {
     ;
 }

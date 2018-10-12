@@ -1,19 +1,16 @@
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#pragma once
 
 #include <QString>
 
 #include "observer.h"
 
 
-// Abstract base class
+// Pure abstract base class
 class Controller : public Observable
 {
     public:
-        Controller();
+        Controller() = default;
         virtual ~Controller() = 0;
 
         virtual void processRequest(const QString& str) = 0;
 };
-
-#endif // CONTROLLER_H

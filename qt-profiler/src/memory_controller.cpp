@@ -1,8 +1,7 @@
 #include "include/memory_controller.h"
 
 
-MemoryController::MemoryController(Model* model) :
-    model_(model)
+MemoryController::MemoryController(Model& model) noexcept : model_(model)
 {
     ;
 }
@@ -12,7 +11,7 @@ MemoryController::~MemoryController()
     ;
 }
 
-void MemoryController::processRequest(const QString& str)
+void MemoryController::processRequest(const QString& request)
 {
-    this->model_->processRequest(str);
+    model_.processRequest(request);
 }
