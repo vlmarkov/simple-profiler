@@ -7,11 +7,14 @@ SOURCES += \
     src/base_profiler.cpp \
     src/main.cpp \
     src/malloc_object.cpp \
-    src/memory_controller.cpp \
-    src/memory_model.cpp \
-    src/memory_view.cpp \
     src/observer.cpp \
-    src/result.cpp
+    src/result.cpp \
+    src/memory/memory_controller.cpp \
+    src/memory/memory_model.cpp \
+    src/memory/memory_view.cpp \
+    src/perfomance/perfomance_controller.cpp \
+    src/perfomance/perfomance_model.cpp \
+    src/perfomance/perfomance_view.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -23,14 +26,16 @@ HEADERS += \
     include/controller.h \
     include/event.h \
     include/malloc_object.h \
-    include/memory_controller.h \
-    include/memory_model.h \
-    include/memory_view.h \
     include/model.h \
     include/observer.h \
     include/view.h \
-    include/result.h
-
+    include/result.h \
+    include/memory/memory_controller.h \
+    include/memory/memory_model.h \
+    include/memory/memory_view.h \
+    include/perfomance/perfomance_controller.h \
+    include/perfomance/perfomance_model.h \
+    include/perfomance/perfomance_view.h
 
 SHARED_LIB_SRC = src/hook_malloc.c
 

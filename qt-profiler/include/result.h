@@ -3,7 +3,7 @@
 #include <QVector>
 #include <QString>
 
-#include "view.h"
+#include "include/view.h"
 
 
 class Result

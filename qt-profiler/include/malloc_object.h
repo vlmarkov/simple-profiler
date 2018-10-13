@@ -5,6 +5,7 @@
 
 enum MallocObjectArg { addr, fun, size, ptr };
 
+
 class MallocObject
 {
     public:

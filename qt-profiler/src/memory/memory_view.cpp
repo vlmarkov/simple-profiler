@@ -1,6 +1,6 @@
 #include "include/model.h"
 #include "include/controller.h"
-#include "include/memory_view.h"
+#include "include/memory/memory_view.h"
 
 #include <QDebug>
 

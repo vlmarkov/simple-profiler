@@ -1,10 +1,10 @@
 #pragma once
 
-#include "view.h"
-#include "model.h"
-#include "result.h"
-#include "controller.h"
-#include "base_profiler.h"
+#include "include/view.h"
+#include "include/model.h"
+#include "include/result.h"
+#include "include/controller.h"
+#include "include/base_profiler.h"
 
 
 class MemoryView : public View

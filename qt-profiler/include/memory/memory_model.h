@@ -5,8 +5,8 @@
 #include <QVector>
 #include <QString>
 
-#include "model.h"
-#include "malloc_object.h"
+#include "include/model.h"
+#include "include/malloc_object.h"
 
 
 class MemoryModel : public Model

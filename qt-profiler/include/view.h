@@ -1,7 +1,7 @@
 #pragma once
 
-#include "event.h"
-#include "observer.h"
+#include "include/event.h"
+#include "include/observer.h"
 
 
 enum class ViewType { source, line, leak, error };

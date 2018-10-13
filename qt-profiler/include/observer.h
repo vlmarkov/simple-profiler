@@ -2,7 +2,7 @@
 
 #include <QVector>
 
-#include "event.h"
+#include "include/event.h"
 
 
 class Observer

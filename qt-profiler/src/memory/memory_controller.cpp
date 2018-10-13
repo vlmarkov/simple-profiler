@@ -1,4 +1,4 @@
-#include "include/memory_controller.h"
+#include "include/memory/memory_controller.h"
 
 
 MemoryController::MemoryController(Model& model) noexcept : model_(model) { }

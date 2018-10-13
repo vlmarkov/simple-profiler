@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#include "include/memory_model.h"
+#include "include/memory/memory_model.h"
 
 
 MemoryModel::MemoryModel() noexcept :

@@ -2,7 +2,7 @@
 
 #include <QString>
 
-#include "observer.h"
+#include "include/observer.h"
 
 
 // Pure abstract base class

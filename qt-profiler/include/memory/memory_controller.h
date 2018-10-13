@@ -1,8 +1,7 @@
-#ifndef MEMORY_CONTROLLER_H
-#define MEMORY_CONTROLLER_H
+#pragma once
 
-#include "model.h"
-#include "controller.h"
+#include "include/model.h"
+#include "include/controller.h"
 
 
 class MemoryController : public Controller
@@ -16,5 +15,3 @@ class MemoryController : public Controller
     private:
         Model& model_;
 };
-
-#endif // MEMORY_CONTROLLER_H
