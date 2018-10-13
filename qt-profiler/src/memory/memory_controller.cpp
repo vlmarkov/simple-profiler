@@ -3,7 +3,7 @@
 
 MemoryController::MemoryController(Model& model) noexcept : model_(model) { }
 
-void MemoryController::processRequest(const QString& request)
+void MemoryController::requestProcess(const QString& request)
 {
-    model_.processRequest(request);
+    model_.requestProcess(request);
 }

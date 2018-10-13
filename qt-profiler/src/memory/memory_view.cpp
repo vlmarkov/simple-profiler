@@ -12,8 +12,8 @@ MemoryView::MemoryView(Model&        model,
     controller_(controller),
     baseProf_(baseProf)
 {
-    model_.Observable::add(this);
-    controller_.Observable::add(this);
+    model_.Observable::add(*this);
+    controller_.Observable::add(*this);
 }
 
 void MemoryView::update(const Event& event)

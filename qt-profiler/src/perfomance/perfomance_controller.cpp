@@ -3,7 +3,7 @@
 
 PerfomanceController::PerfomanceController(Model& model) noexcept : model_(model) { }
 
-void PerfomanceController::processRequest(const QString& request)
+void PerfomanceController::requestProcess(const QString& request)
 {
-    model_.processRequest(request);
+    model_.requestProcess(request);
 }

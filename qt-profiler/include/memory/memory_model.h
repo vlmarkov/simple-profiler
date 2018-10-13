@@ -15,7 +15,7 @@ class MemoryModel : public Model
         MemoryModel() noexcept;
         ~MemoryModel() override = default;
 
-        void processRequest(const QString& str) override;
+        void requestProcess(const QString& request) override;
         Result getResult() noexcept override;
 
     private:
@@ -24,8 +24,8 @@ class MemoryModel : public Model
         const QString fileLib_;
         const QString fileLog_;
 
-        void collectMallocUsage_(const QString& elf);
-        void readMallocUsage_(QMap<QString, MallocObject>& map);
+        void run_(const QString& request);
+        void read_(QMap<QString, MallocObject>& map);
         void leakToSourceCode_(const QMap<QString, MallocObject>& map, const QString& elf);
         void readSourceCode_(const QString& path, const int ln, Result& res);
 };

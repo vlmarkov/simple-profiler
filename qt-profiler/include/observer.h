@@ -20,7 +20,7 @@ class Observable
         Observable() = default;
         ~Observable() = default;
 
-        void add(Observer* observer);
+        void add(Observer& observer) noexcept;
         void notify(const Event& event);
 
     private:

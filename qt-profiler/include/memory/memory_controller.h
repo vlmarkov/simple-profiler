@@ -10,7 +10,7 @@ class MemoryController : public Controller
         MemoryController(Model& model) noexcept;
         ~MemoryController() override = default;
 
-        void processRequest(const QString& str) override;
+        void requestProcess(const QString& str) override;
 
     private:
         Model& model_;

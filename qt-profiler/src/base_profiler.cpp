@@ -15,11 +15,12 @@
 
 void BaseProfiler::memoryCheck(const QString& request)
 {
-    auto model      = std::make_unique<MemoryModel>();
-    auto controller = std::make_unique<MemoryController>(*model.get());
-    auto view       = std::make_unique<MemoryView>(*model.get(), *controller.get(), *this);
+    // Unique pointers usage with polymorphic behaviour
+    std::unique_ptr<Model>      model(std::make_unique<MemoryModel>());
+    std::unique_ptr<Controller> controller(std::make_unique<MemoryController>(*model.get()));
+    std::unique_ptr<View>       view(std::make_unique<MemoryView>(*model.get(), *controller.get(), *this));
 
-    controller->processRequest(request);
+    controller->requestProcess(request);
 
     // View instance will emit a signal
 }
@@ -32,7 +33,7 @@ void BaseProfiler::perfomanceCheck(const QString& request)
     auto controller = std::make_unique<PerfomanceController>(*model.get());
     auto view       = std::make_unique<PerfomanceView>(*model.get(), *controller.get(), *this);
 
-    controller->processRequest(request);
+    controller->requestProcess(request);
 
     // View instance will emit a signal
 }

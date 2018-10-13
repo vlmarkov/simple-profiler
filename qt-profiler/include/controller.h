@@ -12,5 +12,5 @@ class Controller : public Observable
         Controller() = default;
         virtual ~Controller() = default;
 
-        virtual void processRequest(const QString& request) = 0;
+        virtual void requestProcess(const QString& request) = 0;
 };

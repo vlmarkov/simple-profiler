@@ -15,7 +15,7 @@ class PerfomanceModel : public Model
         PerfomanceModel() noexcept = default;
         ~PerfomanceModel() override = default;
 
-        void processRequest(const QString& request) override;
+        void requestProcess(const QString& request) override;
         Result getResult() noexcept override;
 
     private:

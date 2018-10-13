@@ -3,12 +3,9 @@
 #include <QString>
 
 
-void Observable::add(Observer* observer)
+void Observable::add(Observer& observer) noexcept
 {
-    if (!observer)
-        throw(QString("Can't add observer"));
-
-    observers_.push_back(observer);
+    observers_.push_back(&observer);
 }
 
 void Observable::notify(const Event& event)

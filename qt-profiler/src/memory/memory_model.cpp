@@ -10,37 +10,31 @@ MemoryModel::MemoryModel() noexcept :
     fileLib_(QString("lib_hook_malloc.so")),
     fileLog_(QString("log")) { }
 
-void MemoryModel::processRequest(const QString& request)
+void MemoryModel::requestProcess(const QString& request)
 {
     QMap<QString, MallocObject> leaks;
 
+    auto event = Event::fail;
+
     try {
-        this->collectMallocUsage_(request);
+        run_(request);
 
-        this->readMallocUsage_(leaks);
-        if (leaks.size() == 0)
-        {
-            result_.add(qMakePair(ViewType::source , QString("There are no possible memory leaks")));
-            Observable::notify(Event::succses);
-            return;
-        }
+        read_(leaks);
 
-        this->leakToSourceCode_(leaks, request);
+        leakToSourceCode_(leaks, request);
+
+        event = Event::succses;
     }
-    catch (QString& err)
+    catch (QString& exception)
     {
-        result_.add(qMakePair(ViewType::error , err));
-        Observable::notify(Event::fail);
-        return;
+        result_.add(qMakePair(ViewType::error , exception));
     }
     catch (...)
     {
         result_.add(qMakePair(ViewType::error , QString("Unknow error")));
-        Observable::notify(Event::fail);
-        return;
     }
 
-    Observable::notify(Event::succses);
+    Observable::notify(event);
 }
 
 Result MemoryModel::getResult() noexcept
@@ -48,25 +42,15 @@ Result MemoryModel::getResult() noexcept
     return result_;
 }
 
-void MemoryModel::collectMallocUsage_(const QString& elf)
+void MemoryModel::run_(const QString& request)
 {
-    QString arg;
+    QString cmd("LD_PRELOAD=./" + fileLib_ + " " + request + " 2>" + fileLog_);
 
-    arg += "LD_PRELOAD=";
-    arg += "./";
-    arg += fileLib_;
-    arg += " ";
-    arg += elf;
-    arg += " 2>";
-    arg += fileLog_;
-
-    if (system(arg.toStdString().c_str()) != 0)
-    {
-        throw QString("Warning: Can't collect malloc usage for: " + elf);
-    }
+    if (system(cmd.toStdString().c_str()) != 0)
+        throw QString("Warning: Can't run: " + request);
 }
 
-void MemoryModel::readMallocUsage_(QMap<QString, MallocObject>& map)
+void MemoryModel::read_(QMap<QString, MallocObject>& map)
 {
     const QRegExp rx("[ ]");
 
@@ -86,7 +70,8 @@ void MemoryModel::readMallocUsage_(QMap<QString, MallocObject>& map)
             map.remove(key);
         }
 
-        if (argsList.at(MallocObjectArg::fun) == "malloc" || argsList.at(MallocObjectArg::fun) == "calloc")
+        if ((argsList.at(MallocObjectArg::fun) == "malloc") ||
+            (argsList.at(MallocObjectArg::fun) == "calloc"))
         {
             auto key = argsList.at(MallocObjectArg::ptr);
             auto value = MallocObject(argsList.at(MallocObjectArg::addr),
@@ -116,34 +101,30 @@ void MemoryModel::readMallocUsage_(QMap<QString, MallocObject>& map)
     // Delete temporal log file
     if (remove(fileLog_.toUtf8().constData()) != 0)
         throw QString("Warning: Can't delete file: " + fileLog_);
+
+    if (map.size() == 0)
+        result_.add(qMakePair(ViewType::source , QString("There are no possible memory leaks")));
 }
 
 void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, const QString& elf)
 {
+    if (map.size() == 0)
+        return;
+
     const QRegExp rx("[:]");
 
     Result result;
 
     for (auto iter : map)
     {
-        QString arg;
-        arg += ("addr2line -e ");
-        arg += elf;
-        arg += " ";
-        arg += iter.address;
-        arg += " > ";
-        arg += fileLog_;
+        QString cmd("addr2line -e " + elf + " " + iter.address + " > " + fileLog_);
 
-        if (system(arg.toStdString().c_str()) != 0)
-        {
+        if (system(cmd.toStdString().c_str()) != 0)
             throw QString("Warning: Can't process addr2line for: " + elf);
-        }
 
         QFile addr2LineFile(fileLog_);
         if (!addr2LineFile.open(QIODevice::ReadOnly | QFile::Text))
-        {
             throw QString("Warning: Can't open file: " + addr2LineFile.errorString());
-        }
 
         QTextStream inTextStream(&addr2LineFile);
         while (!inTextStream.atEnd())

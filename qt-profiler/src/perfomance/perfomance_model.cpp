@@ -1,7 +1,7 @@
 #include "include/perfomance/perfomance_model.h"
 
 
-void PerfomanceModel::processRequest(const QString& request)
+void PerfomanceModel::requestProcess(const QString& request)
 {
     return; // TODO
 }

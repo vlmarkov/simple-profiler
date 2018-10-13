@@ -13,6 +13,6 @@ class Model : public Observable
         Model() = default;
         virtual ~Model() = default;
 
-        virtual void processRequest(const QString& request) = 0;
+        virtual void requestProcess(const QString& request) = 0;
         virtual Result getResult() = 0;
 };

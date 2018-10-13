@@ -10,7 +10,7 @@ class PerfomanceController : public Controller
         PerfomanceController(Model& model) noexcept;
         ~PerfomanceController() override = default;
 
-        void processRequest(const QString& str) override;
+        void requestProcess(const QString& str) override;
 
     private:
         Model& model_;
