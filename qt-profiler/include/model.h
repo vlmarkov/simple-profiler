@@ -4,7 +4,6 @@
 
 #include "result.h"
 #include "observer.h"
-#include "view_type.h"
 
 
 // Pure abstract base class
@@ -12,8 +11,8 @@ class Model : public Observable
 {
     public:
         Model() = default;
-        virtual ~Model();
+        virtual ~Model() = default;
 
-        virtual void processRequest(const QString& str) = 0;
+        virtual void processRequest(const QString& request) = 0;
         virtual Result getResult() = 0;
 };

@@ -10,7 +10,7 @@ class Controller : public Observable
 {
     public:
         Controller() = default;
-        virtual ~Controller() = 0;
+        virtual ~Controller() = default;
 
-        virtual void processRequest(const QString& str) = 0;
+        virtual void processRequest(const QString& request) = 0;
 };

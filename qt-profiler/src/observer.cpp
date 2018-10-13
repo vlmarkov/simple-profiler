@@ -3,18 +3,6 @@
 #include <QString>
 
 
-Observer::~Observer()
-{
-    ;
-}
-
-/*****************************************************************************/
-
-Observable::~Observable()
-{
-    ;
-}
-
 void Observable::add(Observer* observer)
 {
     if (!observer)

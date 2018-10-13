@@ -11,7 +11,7 @@ class MemoryView : public View
 {
     public:
         MemoryView(Model& model, Controller& controller, BaseProfiler& baseProf);
-        ~MemoryView() override;
+        ~MemoryView() override = default;
 
         void update(const Event& event) override;
 

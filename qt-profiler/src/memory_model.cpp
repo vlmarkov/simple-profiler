@@ -7,37 +7,35 @@
 
 
 MemoryModel::MemoryModel() noexcept :
-    libFileName_(QString("lib_hook_malloc.so")),
-    logFileName_(QString("log"))
-{
-    ;
-}
+    fileLib_(QString("lib_hook_malloc.so")),
+    fileLog_(QString("log")) { }
 
-MemoryModel::~MemoryModel()
+void MemoryModel::processRequest(const QString& request)
 {
-    ;
-}
-
-void MemoryModel::processRequest(const QString& str)
-{
-    QMap<QString, MallocObject> leakMap;
+    QMap<QString, MallocObject> leaks;
 
     try {
-        this->collectMallocUsage_(str);
+        this->collectMallocUsage_(request);
 
-        this->readMallocUsage_(leakMap);
-        if (leakMap.size() == 0)
+        this->readMallocUsage_(leaks);
+        if (leaks.size() == 0)
         {
             result_.add(qMakePair(ViewType::source , QString("There are no possible memory leaks")));
             Observable::notify(Event::succses);
             return;
         }
 
-        this->leakToSourceCode_(leakMap, str);
+        this->leakToSourceCode_(leaks, request);
     }
     catch (QString& err)
     {
         result_.add(qMakePair(ViewType::error , err));
+        Observable::notify(Event::fail);
+        return;
+    }
+    catch (...)
+    {
+        result_.add(qMakePair(ViewType::error , QString("Unknow error")));
         Observable::notify(Event::fail);
         return;
     }
@@ -56,11 +54,11 @@ void MemoryModel::collectMallocUsage_(const QString& elf)
 
     arg += "LD_PRELOAD=";
     arg += "./";
-    arg += this->libFileName_;
+    arg += fileLib_;
     arg += " ";
     arg += elf;
     arg += " 2>";
-    arg += this->logFileName_;
+    arg += fileLog_;
 
     if (system(arg.toStdString().c_str()) != 0)
     {
@@ -72,14 +70,11 @@ void MemoryModel::readMallocUsage_(QMap<QString, MallocObject>& map)
 {
     const QRegExp rx("[ ]");
 
-    QFile file(this->logFileName_);
+    QFile file(fileLog_);
     if (!file.open(QIODevice::ReadOnly | QFile::Text))
-    {
-        throw QString("Warning: Can't open file: " + this->logFileName_);
-    }
+        throw QString("Warning: Can't open file: " + fileLog_);
 
     QTextStream in(&file);
-
     while (!in.atEnd())
     {
         // Read line and split it
@@ -119,10 +114,8 @@ void MemoryModel::readMallocUsage_(QMap<QString, MallocObject>& map)
     file.close();
 
     // Delete temporal log file
-    if (remove(this->logFileName_.toUtf8().constData()) != 0)
-    {
-        throw QString("Warning: Can't delete file: " + this->logFileName_);
-    }
+    if (remove(fileLog_.toUtf8().constData()) != 0)
+        throw QString("Warning: Can't delete file: " + fileLog_);
 }
 
 void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, const QString& elf)
@@ -139,14 +132,14 @@ void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, cons
         arg += " ";
         arg += iter.address;
         arg += " > ";
-        arg += this->logFileName_;
+        arg += fileLog_;
 
         if (system(arg.toStdString().c_str()) != 0)
         {
             throw QString("Warning: Can't process addr2line for: " + elf);
         }
 
-        QFile addr2LineFile(this->logFileName_);
+        QFile addr2LineFile(fileLog_);
         if (!addr2LineFile.open(QIODevice::ReadOnly | QFile::Text))
         {
             throw QString("Warning: Can't open file: " + addr2LineFile.errorString());
@@ -167,10 +160,8 @@ void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, cons
         addr2LineFile.close();
 
         // Delete temporal log file
-        if (remove(this->logFileName_.toUtf8().constData()) != 0)
-        {
-            throw QString("Warning: Can't delete file: " + this->logFileName_);
-        }
+        if (remove(fileLog_.toUtf8().constData()) != 0)
+            throw QString("Warning: Can't delete file: " + fileLog_);
     }
 
     result_ = result;

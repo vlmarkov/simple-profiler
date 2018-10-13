@@ -16,11 +16,6 @@ MemoryView::MemoryView(Model&        model,
     controller_.Observable::add(this);
 }
 
-MemoryView::~MemoryView()
-{
-    ;
-}
-
 void MemoryView::update(const Event& event)
 {
     switch (event)

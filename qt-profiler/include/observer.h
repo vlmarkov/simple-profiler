@@ -9,7 +9,7 @@ class Observer
 {
     public:
         Observer() = default;
-        virtual ~Observer() = 0;
+        virtual ~Observer() = default;
 
         virtual void update(const Event& event) = 0;
 };
@@ -18,7 +18,7 @@ class Observable
 {
     public:
         Observable() = default;
-        ~Observable();
+        ~Observable() = default;
 
         void add(Observer* observer);
         void notify(const Event& event);

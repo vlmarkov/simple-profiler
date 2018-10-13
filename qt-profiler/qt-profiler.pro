@@ -5,15 +5,12 @@ RESOURCES += qml.qrc
 
 SOURCES += \
     src/base_profiler.cpp \
-    src/controller.cpp \
     src/main.cpp \
     src/malloc_object.cpp \
     src/memory_controller.cpp \
     src/memory_model.cpp \
     src/memory_view.cpp \
-    src/model.cpp \
     src/observer.cpp \
-    src/view.cpp \
     src/result.cpp
 
 # Default rules for deployment.
@@ -32,7 +29,6 @@ HEADERS += \
     include/model.h \
     include/observer.h \
     include/view.h \
-    include/view_type.h \
     include/result.h
 
 

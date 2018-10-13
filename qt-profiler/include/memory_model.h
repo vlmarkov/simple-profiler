@@ -13,7 +13,7 @@ class MemoryModel : public Model
 {
     public:
         MemoryModel() noexcept;
-        ~MemoryModel() override;
+        ~MemoryModel() override = default;
 
         void processRequest(const QString& str) override;
         Result getResult() noexcept override;
@@ -21,8 +21,8 @@ class MemoryModel : public Model
     private:
         Result result_;
 
-        const QString libFileName_;
-        const QString logFileName_;
+        const QString fileLib_;
+        const QString fileLog_;
 
         void collectMallocUsage_(const QString& elf);
         void readMallocUsage_(QMap<QString, MallocObject>& map);

@@ -11,13 +11,13 @@ class BaseProfiler : public QObject
 
     public:
         BaseProfiler() = default;
-        ~BaseProfiler();
+        ~BaseProfiler() = default;
 
         Q_INVOKABLE void memoryCheck(const QString& str);
         Q_INVOKABLE void perfomanceCheck(const QString& str);
 
         QString getResult() noexcept;
-        void setResult(const QString str) noexcept;
+        void setResult(const QString& rhs) noexcept;
 
     signals:
         void resultChanged();

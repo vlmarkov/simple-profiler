@@ -8,11 +8,6 @@
 #include <memory>
 
 
-BaseProfiler::~BaseProfiler()
-{
-    ;
-}
-
 void BaseProfiler::memoryCheck(const QString& request)
 {
     auto model      = std::make_unique<MemoryModel>();
@@ -42,8 +37,8 @@ QString BaseProfiler::getResult() noexcept
     return result_;
 }
 
-void BaseProfiler::setResult(const QString str) noexcept
+void BaseProfiler::setResult(const QString& rhs) noexcept
 {
-    result_ = str;
+    result_ = rhs;
     emit resultChanged();
 }

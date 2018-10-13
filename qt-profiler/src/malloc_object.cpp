@@ -8,12 +8,4 @@ MallocObject::MallocObject(QString addr,
     address(addr),
     function(fun),
     size(sz),
-    pointer(ptr)
-{
-    ;
-}
-
-MallocObject::~MallocObject()
-{
-    ;
-}
+    pointer(ptr) { }
