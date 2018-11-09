@@ -1,3 +1,3 @@
-# This a simple profiler
+# This is a simple profiler
 * Detects memory leak
 * Measures perfomance
