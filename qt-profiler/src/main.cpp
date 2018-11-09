@@ -2,10 +2,10 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-#include "include/base_profiler.h"
+#include <include/base-profiler.hpp>
 
 
-int main(int argc, char *argv[])
+int main(int argc, char** argv)
 {
     QGuiApplication::setApplicationName("Basic Profiling Tool");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

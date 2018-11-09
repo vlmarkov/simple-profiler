@@ -9,6 +9,10 @@ class BaseProfiler : public QObject
 {
     Q_OBJECT
 
+    private:
+        Q_PROPERTY(QString getResult READ getResult NOTIFY resultChanged)
+        QString result_;
+
     public:
         BaseProfiler() = default;
         ~BaseProfiler() = default;
@@ -21,8 +25,4 @@ class BaseProfiler : public QObject
 
     signals:
         void resultChanged();
-
-    private:
-        Q_PROPERTY(QString getResult READ getResult NOTIFY resultChanged)
-        QString result_;
 };

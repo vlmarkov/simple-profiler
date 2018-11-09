@@ -1,12 +1,12 @@
-#include "include/result.h"
+#include <include/result.hpp>
 
 
-QVector<QPair<ViewType, QString>> Result::get() noexcept
+QVector<QPair<IViewType, QString>> Result::get() noexcept
 {
     return results_;
 }
 
-void Result::add(const QPair<ViewType, QString>& rhs) noexcept
+void Result::add(const QPair<IViewType, QString>& rhs) noexcept
 {
     results_.push_back(rhs);
 }
