@@ -39,10 +39,10 @@ HEADERS += \
     include/perfomance/perfomance-controller.hpp
 
 
-SHARED_LIB_SRC = src/hook_malloc.c
+SHARED_LIB_SRC = ../hook-malloc/src/hook_malloc.c
 
 # Manual rule to make c-style .so library
-system(gcc -Wall $$SHARED_LIB_SRC -fPIC -shared -o $$OUT_PWD/lib_hook_malloc.so -ldl -rdynamic -pthread -std=c11)
+system(gcc -Wall $$SHARED_LIB_SRC -fPIC -shared -o $$OUT_PWD/lib_hook_malloc.so -ldl -rdynamic -pthread -std=c11 -D GUI)
 
 # Manual rule to make samples
 system(gcc -g -Wall -O2 -o $$OUT_PWD/sample samples/sample.c -std=c11)
