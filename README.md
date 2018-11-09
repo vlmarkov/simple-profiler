@@ -1,1 +1,3 @@
-# This utility helps to detected memory leak
+# This a simple profiler
+* Detects memory leak
+* Measures perfomance
