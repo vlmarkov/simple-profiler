@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#include <QVector>
 
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdint.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <asm/unistd.h>
@@ -18,7 +18,7 @@ class PerfEvent
 {
     public:
         explicit PerfEvent(struct perf_event_attr& pe, pid_t pid);
-        explicit PerfEvent(struct perf_event_attr& pe, pid_t pid, std::vector<uint32_t>& events, std::vector<uint64_t>& ids);
+        explicit PerfEvent(struct perf_event_attr& pe, pid_t pid, QVector<uint32_t>& events, QVector<uint64_t>& ids);
         ~PerfEvent();
 
         void start();

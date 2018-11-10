@@ -39,11 +39,20 @@ ApplicationWindow {
     }
 
     FileDialog {
-        id: memoryDialog
+        id: mDialog
         title: "Please choose a file"
         onAccepted:
         {
-            onAccepted: baseProfiler.memoryCheck(memoryDialog.fileUrl.toString().replace("file://", ""))
+            onAccepted: baseProfiler.runMemoryCheck(mDialog.fileUrl.toString().replace("file://", ""))
+        }
+    }
+
+    FileDialog {
+        id: pDialog
+        title: "Please choose a file"
+        onAccepted:
+        {
+            onAccepted: baseProfiler.runPerfomanceCheck(pDialog.fileUrl.toString().replace("file://", ""))
         }
     }
 
@@ -72,7 +81,7 @@ ApplicationWindow {
             MenuItem
             {
                 text: qsTr("&Choose file and run")
-                onTriggered: memoryDialog.open()
+                onTriggered: mDialog.open()
             }
         }
 
@@ -82,7 +91,8 @@ ApplicationWindow {
             title: qsTr("Perfomance Profiler")
             MenuItem
             {
-                text: qsTr("&Comming soon")
+                text: qsTr("&Choose file and run")
+                onTriggered: pDialog.open()
             }
         }
     }

@@ -1,14 +1,14 @@
-#include <include/perfomance/perf/exception.hpp>
+#include <include/profiler/perfomance/perf/exception.hpp>
 
 
-Exception::Exception(const std::string& err, const int code) : code_(code), err_(err)
+Exception::Exception(const QString& err, const int code) : code_(code), err_(err)
 {
     ;
 }
 
 const char* Exception::what() const noexcept
 {
-    return err_.c_str();
+    return err_.toUtf8().constData();
 }
 
 const int Exception::code() const noexcept

@@ -5,16 +5,12 @@
 #include <include/i-profiler.hpp>
 
 
-enum class IFactoryType { perf, malloc };
+enum class IFactoryType { perf_event, perf_sample, mem_leak };
 
 
 // This is a interface class
 class IFactory
 {
-    protected:
-        virtual ~IFactory() = default;
-        IFactory& operator=(const IFactory&) = delete;
-
     public:
-        virtual std::shared_ptr<IProfiler> createProfiler(const IFactoryType& type) = 0;
+        static auto createProfiler(const IFactoryType& type) -> std::shared_ptr<IProfiler>;
 };

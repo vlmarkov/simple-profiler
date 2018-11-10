@@ -7,18 +7,16 @@
 #include <include/profiler/i-controller.hpp>
 
 
-class PerfomanceView : public IView
+class PerfViewEvents : public IView
 {
     private:
-        IModel&        model_;
-        IController&   controller_;
+        IModel&       model_;
+        IController&  controller_;
         BaseProfiler& baseProf_;
 
-        QString toHtml_(Result result) noexcept;
-
     public:
-        PerfomanceView(IModel& model, IController& controller, BaseProfiler& baseProf);
-        ~PerfomanceView() override = default;
+        PerfViewEvents(IModel& model, IController& controller, BaseProfiler& baseProf);
+        ~PerfViewEvents() override = default;
 
         void update(const Event& event) override;
 };

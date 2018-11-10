@@ -12,5 +12,5 @@ class MemoryProfiler : public IProfiler
         MemoryProfiler()  = default;
         ~MemoryProfiler() = default;
 
-        void run(const QString& request, BaseProfiler& baseProf) override;
+        void run(const QString& pathToFile, BaseProfiler& baseProf) override;
 };

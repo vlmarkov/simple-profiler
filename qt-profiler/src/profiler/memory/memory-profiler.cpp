@@ -2,7 +2,6 @@
 
 #include <include/profiler/memory/memory-view.hpp>
 #include <include/profiler/memory/memory-model.hpp>
-#include <include/profiler/memory/memory-factory.hpp>
 #include <include/profiler/memory/memory-profiler.hpp>
 #include <include/profiler/memory/memory-controller.hpp>
 

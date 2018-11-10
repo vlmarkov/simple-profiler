@@ -17,8 +17,8 @@ class BaseProfiler : public QObject
         BaseProfiler() = default;
         ~BaseProfiler() = default;
 
-        Q_INVOKABLE void memoryCheck(const QString& str);
-        Q_INVOKABLE void perfomanceCheck(const QString& str);
+        Q_INVOKABLE void runMemoryCheck(const QString& pathToFile);
+        Q_INVOKABLE void runPerfomanceCheck(const QString& pathToFile);
 
         QString getResult() noexcept;
         void setResult(const QString& rhs) noexcept;

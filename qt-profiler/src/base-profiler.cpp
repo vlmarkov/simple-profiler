@@ -1,36 +1,18 @@
-#include <QDebug>
-
-#include <memory>
-
 #include <include/i-factory.hpp>
-#include <include/i-profiler.hpp>
 #include <include/base-profiler.hpp>
-#include <include/profiler/memory/memory-factory.hpp>
 
 
-void BaseProfiler::memoryCheck(const QString& request)
+void BaseProfiler::runMemoryCheck(const QString& pathToFile)
 {
-    std::shared_ptr<IFactory> factory = std::make_shared<MemoryFactory>();
-    auto profiler = factory->createProfiler(IFactoryType::malloc);
-    profiler->run(request, *this);
+    auto profiler = IFactory::createProfiler(IFactoryType::mem_leak);
+    profiler->run(pathToFile, *this);
 }
 
-void BaseProfiler::perfomanceCheck(const QString& request)
+void BaseProfiler::runPerfomanceCheck(const QString& pathToFile)
 {
-    // Comming soon!
-/*
-    std::shared_ptr<IFactory> factory = std::make_shared<PerfomanceFactory>();
-    auto profiler = factory->createProfiler(IFactory::perf); 
-    profiler->run(request);
-*/
-    // run {
-    //   std::unique_ptr<IModel>      model(std::make_unique<PerfomanceModel>());
-    //   std::unique_ptr<IController> controller(std::make_unique<PerfomanceController>(*model.get()));
-    //   std::unique_ptr<IView>       view(std::make_unique<PerfomanceView>(*model.get(), *controller.get(), *this));
-    //   controller->requestProcess(request);
-    // }
-
-    // View instance will emit a signal
+    //auto profiler = IFactory::createProfiler(IFactoryType::perf_sample);
+    auto profiler = IFactory::createProfiler(IFactoryType::perf_event);
+    profiler->run(pathToFile, *this);
 }
 
 QString BaseProfiler::getResult() noexcept
