@@ -1,4 +1,3 @@
-#include <iostream>
 #include <algorithm>
 #include <functional>
 
@@ -6,10 +5,9 @@
 
 #include <sys/wait.h>
 
-#include <include/profiler/perfomance/perf/exception.hpp>
-#include <include/profiler/perfomance/perf/perf-model-sampling.hpp>
-
-#include <include/profiler/perfomance/perf/perf-controller.hpp>
+#include <include/profiler/exception.hpp>
+#include <include/profiler/perf/perf-controller.hpp>
+#include <include/profiler/perf/perf-model-sampling.hpp>
 
 #include <QDebug>
 

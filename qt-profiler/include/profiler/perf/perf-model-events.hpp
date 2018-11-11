@@ -4,8 +4,8 @@
 #include <QString>
 
 #include <include/profiler/i-model.hpp>
-#include <include/profiler/perfomance/perf/utils.hpp>
-#include <include/profiler/perfomance/perf/event.hpp>
+#include <include/profiler/perf/perf-utils.hpp>
+#include <include/profiler/perf/perf-event.hpp>
 
 
 class PerfModelEvents : public IModel

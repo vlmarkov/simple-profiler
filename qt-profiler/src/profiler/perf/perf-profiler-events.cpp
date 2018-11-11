@@ -2,11 +2,11 @@
 
 #include <memory>
 
-#include <include/profiler/perfomance/perf/exception.hpp>
-#include <include/profiler/perfomance/perf/perf-view-events.hpp>
-#include <include/profiler/perfomance/perf/perf-controller.hpp>
-#include <include/profiler/perfomance/perf/profiler-events.hpp>
-#include <include/profiler/perfomance/perf/perf-model-events.hpp>
+#include <include/profiler/exception.hpp>
+#include <include/profiler/perf/perf-controller.hpp>
+#include <include/profiler/perf/perf-view-events.hpp>
+#include <include/profiler/perf/perf-model-events.hpp>
+#include <include/profiler/perf/perf-profiler-events.hpp>
 
 
 void PerfProfilerEvents::run(const QString& pathToFile, BaseProfiler& baseProfiler)

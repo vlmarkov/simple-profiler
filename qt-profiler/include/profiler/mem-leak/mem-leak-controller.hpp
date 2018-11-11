@@ -4,14 +4,14 @@
 #include <include/profiler/i-controller.hpp>
 
 
-class MemoryController : public IController
+class MemLeakController : public IController
 {
     private:
         IModel& model_;
 
     public:
-        MemoryController(IModel& model) noexcept;
-        ~MemoryController() override = default;
+        MemLeakController(IModel& model) noexcept;
+        ~MemLeakController() override = default;
 
         void requestProcess(const QString& str) override;
 };

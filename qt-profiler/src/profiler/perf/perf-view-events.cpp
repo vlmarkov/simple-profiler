@@ -1,6 +1,6 @@
 #include <include/profiler/i-model.hpp>
 #include <include/profiler/i-controller.hpp>
-#include <include/profiler/perfomance/perf/perf-view-events.hpp>
+#include <include/profiler/perf/perf-view-events.hpp>
 
 
 PerfViewEvents::PerfViewEvents(IModel& model, IController& controller, BaseProfiler& baseProf):

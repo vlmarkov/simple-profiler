@@ -1,6 +1,6 @@
 #pragma once
 
-#include <include/profiler/perfomance/perf/event.hpp>
+#include <include/profiler/perf/perf-event.hpp>
 
 
 class RingBuffer

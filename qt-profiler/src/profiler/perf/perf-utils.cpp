@@ -1,5 +1,5 @@
-#include <include/profiler/perfomance/perf/utils.hpp>
-#include <include/profiler/perfomance/perf/exception.hpp>
+#include <include/profiler/exception.hpp>
+#include <include/profiler/perf/perf-utils.hpp>
 
 
 RingBuffer::RingBuffer(const int fd)

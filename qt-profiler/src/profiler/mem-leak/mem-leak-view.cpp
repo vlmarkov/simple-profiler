@@ -1,11 +1,11 @@
 #include <include/profiler/i-model.hpp>
 #include <include/profiler/i-controller.hpp>
-#include <include/profiler/memory/memory-view.hpp>
+#include <include/profiler/mem-leak/mem-leak-view.hpp>
 
 
-MemoryView::MemoryView(IModel&       model,
-                       IController&  controller,
-                       BaseProfiler& baseProf):
+MemLeakView::MemLeakView(IModel&       model,
+                         IController&  controller,
+                         BaseProfiler& baseProf):
     model_(model),
     controller_(controller),
     baseProf_(baseProf)
@@ -14,7 +14,7 @@ MemoryView::MemoryView(IModel&       model,
     controller_.Observable::add(*this);
 }
 
-void MemoryView::update(const Event& event)
+void MemLeakView::update(const Event& event)
 {
     switch (event)
     {
@@ -31,7 +31,7 @@ void MemoryView::update(const Event& event)
     }
 }
 
-QString MemoryView::toHtml_(Result result) noexcept
+QString MemLeakView::toHtml_(Result result) noexcept
 {
     QString htmlStr;
 

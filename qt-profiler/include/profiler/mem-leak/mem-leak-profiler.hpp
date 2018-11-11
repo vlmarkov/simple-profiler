@@ -6,11 +6,11 @@
 #include <include/base-profiler.hpp>
 
 
-class MemoryProfiler : public IProfiler
+class MemLeakProfiler : public IProfiler
 {
     public:
-        MemoryProfiler()  = default;
-        ~MemoryProfiler() = default;
+        MemLeakProfiler()  = default;
+        ~MemLeakProfiler() = default;
 
         void run(const QString& pathToFile, BaseProfiler& baseProf) override;
 };

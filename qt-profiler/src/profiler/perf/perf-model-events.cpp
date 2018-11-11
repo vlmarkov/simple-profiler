@@ -2,9 +2,9 @@
 
 #include <boost/process.hpp>
 
-#include <include/profiler/perfomance/perf/utils.hpp>
-#include <include/profiler/perfomance/perf/exception.hpp>
-#include <include/profiler/perfomance/perf/perf-model-events.hpp>
+#include <include/profiler/exception.hpp>
+#include <include/profiler/perf/perf-utils.hpp>
+#include <include/profiler/perf/perf-model-events.hpp>
 
 
 PerfModelEvents::PerfModelEvents(QVector<uint32_t>& hw) : hw_(hw)

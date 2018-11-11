@@ -4,15 +4,28 @@
 
 void BaseProfiler::runMemoryCheck(const QString& pathToFile)
 {
-    auto profiler = IFactory::createProfiler(IFactoryType::mem_leak);
-    profiler->run(pathToFile, *this);
+    try {
+        auto profiler = IFactory::createProfiler(IFactoryType::mem_leak);
+        profiler->run(pathToFile, *this);
+    }
+    catch (...)
+    {
+        // TODO
+    }
 }
 
 void BaseProfiler::runPerfomanceCheck(const QString& pathToFile)
 {
-    //auto profiler = IFactory::createProfiler(IFactoryType::perf_sample);
-    auto profiler = IFactory::createProfiler(IFactoryType::perf_event);
-    profiler->run(pathToFile, *this);
+    try
+    {
+        //auto profiler = IFactory::createProfiler(IFactoryType::perf_sample);
+        auto profiler = IFactory::createProfiler(IFactoryType::perf_event);
+        profiler->run(pathToFile, *this);
+    }
+    catch (...)
+    {
+        // TODO
+    }
 }
 
 QString BaseProfiler::getResult() noexcept

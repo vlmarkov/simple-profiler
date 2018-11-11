@@ -3,16 +3,16 @@
 
 #include <stdlib.h>
 
-#include <include/profiler/memory/memory-model.hpp>
+#include <include/profiler/mem-leak/mem-leak-model.hpp>
 
 
-MemoryModel::MemoryModel() noexcept :
+MemLeakModel::MemLeakModel() noexcept :
     fileLib_(QString("lib_hook_malloc.so")),
     fileLog_(QString("log")) { }
 
-void MemoryModel::requestProcess(const QString& request)
+void MemLeakModel::requestProcess(const QString& request)
 {
-    QMap<QString, MallocObject> leaks;
+    QMap<QString, MemLeakObj> leaks;
 
     auto event = Event::fail;
 
@@ -37,12 +37,12 @@ void MemoryModel::requestProcess(const QString& request)
     Observable::notify(event);
 }
 
-Result MemoryModel::getResult() noexcept
+Result MemLeakModel::getResult() noexcept
 {
     return result_;
 }
 
-void MemoryModel::run_(const QString& request)
+void MemLeakModel::run_(const QString& request)
 {
     QString cmd("LD_PRELOAD=./" + fileLib_ + " " + request + " 2>" + fileLog_);
 
@@ -50,7 +50,7 @@ void MemoryModel::run_(const QString& request)
         throw QString("Warning: Can't run: " + request);
 }
 
-void MemoryModel::read_(QMap<QString, MallocObject>& map)
+void MemLeakModel::read_(QMap<QString, MemLeakObj>& map)
 {
     const QRegExp rx("[ ]");
 
@@ -64,31 +64,31 @@ void MemoryModel::read_(QMap<QString, MallocObject>& map)
         // Read line and split it
         auto argsList = in.readLine().split(rx, QString::SkipEmptyParts);
 
-        if (argsList.at(MallocObjectArg::fun) == "free")
+        if (argsList.at(MemLeakObjArg::fun) == "free")
         {
-            auto key = argsList.at(MallocObjectArg::ptr);
+            auto key = argsList.at(MemLeakObjArg::ptr);
             map.remove(key);
         }
 
-        if ((argsList.at(MallocObjectArg::fun) == "malloc") ||
-            (argsList.at(MallocObjectArg::fun) == "calloc"))
+        if ((argsList.at(MemLeakObjArg::fun) == "malloc") ||
+            (argsList.at(MemLeakObjArg::fun) == "calloc"))
         {
-            auto key = argsList.at(MallocObjectArg::ptr);
-            auto value = MallocObject(argsList.at(MallocObjectArg::addr),
-                                      argsList.at(MallocObjectArg::fun),
-                                      argsList.at(MallocObjectArg::size),
-                                      argsList.at(MallocObjectArg::ptr));
+            auto key = argsList.at(MemLeakObjArg::ptr);
+            auto value = MemLeakObj(argsList.at(MemLeakObjArg::addr),
+                                    argsList.at(MemLeakObjArg::fun),
+                                    argsList.at(MemLeakObjArg::size),
+                                    argsList.at(MemLeakObjArg::ptr));
 
             map.insert(key, value);
         }
 
-        if (argsList.at(MallocObjectArg::fun) == "realloc")
+        if (argsList.at(MemLeakObjArg::fun) == "realloc")
         {
-            auto key = argsList.at(MallocObjectArg::ptr);
-            auto value = MallocObject(argsList.at(MallocObjectArg::addr),
-                                      argsList.at(MallocObjectArg::fun),
-                                      argsList.at(MallocObjectArg::size),
-                                      argsList.at(MallocObjectArg::ptr));
+            auto key = argsList.at(MemLeakObjArg::ptr);
+            auto value = MemLeakObj(argsList.at(MemLeakObjArg::addr),
+                                    argsList.at(MemLeakObjArg::fun),
+                                    argsList.at(MemLeakObjArg::size),
+                                    argsList.at(MemLeakObjArg::ptr));
 
             map.remove(key);
             map.insert(key, value);
@@ -106,7 +106,7 @@ void MemoryModel::read_(QMap<QString, MallocObject>& map)
         result_.add(qMakePair(IViewType::source , QString("There are no possible memory leaks")));
 }
 
-void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, const QString& elf)
+void MemLeakModel::leakToSourceCode_(const QMap<QString, MemLeakObj>& map, const QString& elf)
 {
     if (map.size() == 0)
         return;
@@ -148,7 +148,7 @@ void MemoryModel::leakToSourceCode_(const QMap<QString, MallocObject>& map, cons
     result_ = result;
 }
 
-void MemoryModel::readSourceCode_(const QString& path, const int ln, Result& result)
+void MemLeakModel::readSourceCode_(const QString& path, const int ln, Result& result)
 {
     // Get path to source file and open it
     QFile file(path);

@@ -1,5 +1,5 @@
-#include <include/profiler/perfomance/perf/event.hpp>
-#include <include/profiler/perfomance/perf/exception.hpp>
+#include <include/profiler/perf/perf-event.hpp>
+#include <include/profiler/exception.hpp>
 
 
 PerfEvent::PerfEvent(struct perf_event_attr& pe, pid_t pid)

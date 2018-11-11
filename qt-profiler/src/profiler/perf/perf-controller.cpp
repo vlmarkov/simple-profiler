@@ -1,5 +1,5 @@
-#include <include/profiler/perfomance/perf/exception.hpp>
-#include <include/profiler/perfomance/perf/perf-controller.hpp>
+#include <include/profiler/exception.hpp>
+#include <include/profiler/perf/perf-controller.hpp>
 
 #include <unistd.h>
 #include <sys/types.h>

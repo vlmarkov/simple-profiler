@@ -2,11 +2,11 @@
 
 #include <memory>
 
-#include <include/profiler/perfomance/perf/exception.hpp>
-#include <include/profiler/perfomance/perf/perf-view-sampling.hpp>
-#include <include/profiler/perfomance/perf/perf-controller.hpp>
-#include <include/profiler/perfomance/perf/profiler-sampling.hpp>
-#include <include/profiler/perfomance/perf/perf-model-sampling.hpp>
+#include <include/profiler/exception.hpp>
+#include <include/profiler/perf/perf-controller.hpp>
+#include <include/profiler/perf/perf-view-sampling.hpp>
+#include <include/profiler/perf/perf-model-sampling.hpp>
+#include <include/profiler/perf/perf-profiler-sampling.hpp>
 
 
 void PerfProfilerSampling::run(const QString& pathToFile, BaseProfiler& baseProfiler)

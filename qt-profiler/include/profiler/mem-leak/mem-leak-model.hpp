@@ -6,10 +6,10 @@
 #include <QString>
 
 #include <include/profiler/i-model.hpp>
-#include <include/profiler/memory/malloc-object.hpp>
+#include <include/profiler/mem-leak/mem-leak-object.hpp>
 
 
-class MemoryModel : public IModel
+class MemLeakModel : public IModel
 {
     private:
         Result result_;
@@ -18,13 +18,13 @@ class MemoryModel : public IModel
         const QString fileLog_;
 
         void run_(const QString& request);
-        void read_(QMap<QString, MallocObject>& map);
-        void leakToSourceCode_(const QMap<QString, MallocObject>& map, const QString& elf);
+        void read_(QMap<QString, MemLeakObj>& map);
+        void leakToSourceCode_(const QMap<QString, MemLeakObj>& map, const QString& elf);
         void readSourceCode_(const QString& path, const int ln, Result& res);
 
     public:
-        MemoryModel() noexcept;
-        ~MemoryModel() override = default;
+        MemLeakModel() noexcept;
+        ~MemLeakModel() override = default;
 
         void requestProcess(const QString& request) override;
         Result getResult() noexcept override;

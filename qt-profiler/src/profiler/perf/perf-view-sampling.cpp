@@ -1,6 +1,6 @@
 #include <include/profiler/i-model.hpp>
 #include <include/profiler/i-controller.hpp>
-#include <include/profiler/perfomance/perf/perf-view-sampling.hpp>
+#include <include/profiler/perf/perf-view-sampling.hpp>
 
 
 PerfViewSampling::PerfViewSampling(IModel& model, IController& controller, BaseProfiler& baseProf):

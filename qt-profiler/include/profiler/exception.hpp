@@ -11,7 +11,7 @@ class Exception : public std::exception
         ~Exception() = default;
 
         virtual const char* what() const noexcept override;
-        const int code() const noexcept;
+        int code() const noexcept;
 
     private:
         int     code_;

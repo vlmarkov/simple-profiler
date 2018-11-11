@@ -7,7 +7,7 @@
 #include <include/profiler/i-controller.hpp>
 
 
-class MemoryView : public IView
+class MemLeakView : public IView
 {
     private:
         IModel&       model_;
@@ -17,8 +17,8 @@ class MemoryView : public IView
         QString toHtml_(Result res) noexcept;
 
     public:
-        MemoryView(IModel& model, IController& controller, BaseProfiler& baseProf);
-        ~MemoryView() override = default;
+        MemLeakView(IModel& model, IController& controller, BaseProfiler& baseProf);
+        ~MemLeakView() override = default;
 
         void update(const Event& event) override;
 };
