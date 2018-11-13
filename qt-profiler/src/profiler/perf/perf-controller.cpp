@@ -13,7 +13,7 @@ PerfController::PerfController(IModel& model) noexcept : model_(model)
 void PerfController::requestProcess(const QString& request)
 {
     if (::getuid() != 0 && ::geteuid() != 0)
-        throw Exception("You don't have a sudo right!");
-
-    model_.requestProcess(request);
+        Observable::notify(Event::sudoRight);
+    else
+        model_.requestProcess(request);
 }

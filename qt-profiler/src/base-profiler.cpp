@@ -18,8 +18,8 @@ void BaseProfiler::runPerfomanceCheck(const QString& pathToFile)
 {
     try
     {
-        //auto profiler = IFactory::createProfiler(IFactoryType::perf_sample);
-        auto profiler = IFactory::createProfiler(IFactoryType::perf_event);
+        auto profiler = IFactory::createProfiler(IFactoryType::perf_sample);
+        //auto profiler = IFactory::createProfiler(IFactoryType::perf_event);
         profiler->run(pathToFile, *this);
     }
     catch (...)

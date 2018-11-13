@@ -32,49 +32,52 @@ PerfModelSampling::PerfModelSampling(uint32_t samplePeriod)
 
 void PerfModelSampling::requestProcess(const QString& pathToFile)
 {
+    auto event = Event::fail;
+
     try
     {
-        boost::process::child c(pathToFile.toStdString());
+        boost::process::child child(pathToFile.toStdString());
 
-        auto perfEvent  = PerfEvent(this->pe_, c.id());
+        auto perfEvent  = PerfEvent(this->pe_, child.id());
         auto ringBuffer = RingBuffer(perfEvent.getFd());
 
         perfEvent.start();
 
-        while (c.running())
+        while (child.running())
         {
             if (ringBuffer.hasData())
             {
-                //auto page   = ringBuffer.pageGet();
-                auto sample = ringBuffer.sampleGet();
-
-                //PerfModelSampling::pagePrint_(page);
-                //PerfModelSampling::samplePrint_(sample);
-                PerfModelSampling::sampleCopy_(sample);
+                PerfModelSampling::sampleCopy_(ringBuffer.sampleGet());
             }
         }
 
-        c.wait();
+        child.wait();
 
-        qDebug() << "Samples gather: " << this->samplesCnt_;
-        qDebug() << "Child " << c.id() << " ended with code " << c.exit_code();
+        this->result_.add(qMakePair(IViewType::source,
+            QString("Samples gather: "+ QString::number(this->samplesCnt_))));
+
+        this->result_.add(qMakePair(IViewType::source,
+            QString("Child " + QString::number(child.id()) + " ended with code " + QString::number(child.exit_code()))));
 
         perfEvent.stop();
 
-        PerfModelSampling::mapPrint_();
+        PerfModelSampling::samplesToResult_();
+        event = Event::succses;
     }
     catch (Exception& exception)
     {
-        qDebug() << QString(exception.what()) << " : " << exception.code();
+        this->result_.add(qMakePair(IViewType::error , QString(exception.what())));
     }
     catch (std::exception& exception)
     {
-        qDebug() << QString(exception.what());
+        this->result_.add(qMakePair(IViewType::error , QString(exception.what())));
     }
     catch (...)
     {
-        qDebug() << QString("Caught unexpected exception");
+        this->result_.add(qMakePair(IViewType::error , QString("Unknow error")));
     }
+
+    Observable::notify(event);
 }
 
 Result PerfModelSampling::getResult() noexcept
@@ -82,70 +85,30 @@ Result PerfModelSampling::getResult() noexcept
     return result_;
 }
 
-// TODO: move to view module
-void PerfModelSampling::pagePrint_(const RecordPage& page)
-{
-    qDebug() << "The first metadata mmap page:";
-    qDebug() << "\tversion        : " << page.mpage.version;
-    qDebug() << "\tcompat version : " << page.mpage.compat_version;
-    qDebug() << "\tlock           : " << page.mpage.lock;
-    qDebug() << "\tindex          : " << page.mpage.index;
-    qDebug() << "\toffset         : " << page.mpage.offset;
-    qDebug() << "\ttime enabled   : " << page.mpage.time_enabled;
-    qDebug() << "\ttime running   : " << page.mpage.time_running;
-    qDebug() << "\tdata head      : " << page.mpage.data_head;
-    qDebug() << "\tdata tail      : " << page.mpage.data_tail;
-    qDebug() << "\tdata offset    : " << page.mpage.data_offset;
-    qDebug() << "\tdata size      : " << page.mpage.data_size;
-    qDebug() << "";
-}
-
-// TODO: move to view module
-void PerfModelSampling::samplePrint_(const RecordSample& sample)
-{
-    if (sample.header.type != PERF_RECORD_SAMPLE)
-        return;
-
-    qDebug() << "Sample's header:";
-    qDebug() << "\ttype : PERF_RECORD_SAMPLE";
-    qDebug() << "\tmisc : " << sample.header.misc;
-    qDebug() << "\tsize : " << sample.header.size;
-    qDebug() << "";
-    qDebug() << "Sample's data:";
-    qDebug() << "\ttid  : "   << sample.tid;
-    qDebug() << "\tpid  : "   << sample.pid;
-    qDebug() << "";
-    qDebug() << "\tip   : 0x" << sample.ip;
-    qDebug() << "";
-    qDebug() << "";
-}
-
 void PerfModelSampling::sampleCopy_(const RecordSample& sample)
 {
     if (sample.header.type != PERF_RECORD_SAMPLE)
         return;
 
-    // TODO: move to model module
-    auto find = this->map_.find(sample.ip);
-    if (find != this->map_.end())
+    auto find = this->samplesMap_.find(sample.ip);
+    if (find != this->samplesMap_.end())
         find->second++;
     else
-        this->map_.insert(std::make_pair(sample.ip, 1.0));
+        this->samplesMap_.insert(std::make_pair(sample.ip, 1.0));
 
     this->samplesCnt_++;
 }
 
-// TODO: move to view module
-void PerfModelSampling::mapPrint_()
+void PerfModelSampling::samplesToResult_()
 {
-    qDebug() << "";
-    qDebug() << "ip\t\t%";
-    for (auto i : this->map_)
+    for (auto i : this->samplesMap_)
     {
-        qDebug() << "0x" << i.first;
-        qDebug() << "\t";
-        qDebug() << i.second / (double)this->samplesCnt_ * 100.0;
-        qDebug() << "";
+        QString value;
+        value += "0x";
+        value += QString::number(i.first, 16);
+        value += "\t";
+        value += QString::number(static_cast<double>(i.second) / static_cast<double>(this->samplesCnt_) * 100.0);
+        value += " %";
+        this->result_.add(qMakePair(IViewType::source, value));
     }
-    qDebug() << "";
 }

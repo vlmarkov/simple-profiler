@@ -16,12 +16,10 @@ class PerfModelSampling : public IModel
 
         long samplesCnt_;
 
-        std::map<uint64_t, double> map_;
+        std::map<uint64_t, double> samplesMap_;
 
-        void mapPrint_();
+        void samplesToResult_();
 
-        void pagePrint_(const RecordPage& page);
-        void samplePrint_(const RecordSample& sample);
         void sampleCopy_(const RecordSample& sample);
 
         Result result_;

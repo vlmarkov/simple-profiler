@@ -14,6 +14,8 @@ class PerfViewSampling : public IView
         IController&  controller_;
         BaseProfiler& baseProf_;
 
+        QString toHtml_(Result res) noexcept;
+
     public:
         PerfViewSampling(IModel& model, IController& controller, BaseProfiler& baseProf);
         ~PerfViewSampling() override = default;
