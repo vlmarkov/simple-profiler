@@ -2,8 +2,8 @@
 
 #include <QVector>
 
-#include <include/profiler/event.hpp>
 
+enum class IObserverEvent { fail, succses, sudoRight };
 
 // This is an interface class
 class IObserver
@@ -12,5 +12,5 @@ class IObserver
         IObserver() = default;
         virtual ~IObserver() = default;
 
-        virtual void update(const Event& event) = 0;
+        virtual void update(const IObserverEvent& event) = 0;
 };

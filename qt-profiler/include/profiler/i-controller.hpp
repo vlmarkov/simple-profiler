@@ -12,5 +12,5 @@ class IController : public Observable
         IController() = default;
         virtual ~IController() = default;
 
-        virtual void requestProcess(const QString& request) = 0;
+        virtual void process(const QString& pathTo) = 0;
 };

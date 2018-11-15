@@ -24,12 +24,12 @@ class PerfEvent
         void start();
         void stop();
 
-        int getFd();
+        long getFd();
 
     private:
-        int fd_;
-        int isGrouping_;
+        long fd_;
+        bool isGrouping_;
 
-        int open_(struct perf_event_attr& pe, pid_t pid, int cpu, int gFd, unsigned long flags);
+        long open_(struct perf_event_attr& pe, pid_t pid, int cpu, int gFd, unsigned long flags);
         void close_();
 };

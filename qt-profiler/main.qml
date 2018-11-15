@@ -52,7 +52,7 @@ ApplicationWindow {
         title: "Please choose a file"
         onAccepted:
         {
-            onAccepted: baseProfiler.runPerfomanceCheck(pDialog.fileUrl.toString().replace("file://", ""))
+            onAccepted: baseProfiler.runPerfomanceSampleCheck(pDialog.fileUrl.toString().replace("file://", ""))
         }
     }
 

@@ -13,6 +13,6 @@ class IModel : public Observable
         IModel() = default;
         virtual ~IModel() = default;
 
-        virtual void requestProcess(const QString& request) = 0;
+        virtual void process(const QString& pathTo) = 0;
         virtual Result getResult() = 0;
 };

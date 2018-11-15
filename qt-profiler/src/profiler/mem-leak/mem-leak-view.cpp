@@ -14,20 +14,20 @@ MemLeakView::MemLeakView(IModel&       model,
     controller_.Observable::add(*this);
 }
 
-void MemLeakView::update(const Event& event)
+void MemLeakView::update(const IObserverEvent& event)
 {
     switch (event)
     {
-        case Event::fail:
-        {
+        case IObserverEvent::fail:
             baseProf_.setResult(toHtml_(model_.getResult()));
             break;
-        }
-        case Event::succses:
-        {
+
+        case IObserverEvent::succses:
             baseProf_.setResult(toHtml_(model_.getResult()));
             break;
-        }
+
+        default:
+            break;
     }
 }
 

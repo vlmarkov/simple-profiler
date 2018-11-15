@@ -1,6 +1,5 @@
 #pragma once
 
-#include <include/profiler/event.hpp>
 #include <include/profiler/i-observer.hpp>
 
 
@@ -14,5 +13,5 @@ class IView : public IObserver
         IView() = default;
         virtual ~IView() = default;
 
-        virtual void update(const Event& event) = 0;
+        virtual void update(const IObserverEvent& event) = 0;
 };

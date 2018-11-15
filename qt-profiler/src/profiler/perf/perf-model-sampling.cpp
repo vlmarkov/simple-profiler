@@ -30,13 +30,13 @@ PerfModelSampling::PerfModelSampling(uint32_t samplePeriod)
     this->samplesCnt_ = 0;
 }
 
-void PerfModelSampling::requestProcess(const QString& pathToFile)
+void PerfModelSampling::process(const QString& pathTo)
 {
-    auto event = Event::fail;
+    auto event = IObserverEvent::fail;
 
     try
     {
-        boost::process::child child(pathToFile.toStdString());
+        boost::process::child child(pathTo.toStdString());
 
         auto perfEvent  = PerfEvent(this->pe_, child.id());
         auto ringBuffer = RingBuffer(perfEvent.getFd());
@@ -53,16 +53,10 @@ void PerfModelSampling::requestProcess(const QString& pathToFile)
 
         child.wait();
 
-        this->result_.add(qMakePair(IViewType::source,
-            QString("Samples gather: "+ QString::number(this->samplesCnt_))));
-
-        this->result_.add(qMakePair(IViewType::source,
-            QString("Child " + QString::number(child.id()) + " ended with code " + QString::number(child.exit_code()))));
-
         perfEvent.stop();
 
-        PerfModelSampling::samplesToResult_();
-        event = Event::succses;
+        PerfModelSampling::samplesToResult_(pathTo);
+        event = IObserverEvent::succses;
     }
     catch (Exception& exception)
     {
@@ -99,16 +93,41 @@ void PerfModelSampling::sampleCopy_(const RecordSample& sample)
     this->samplesCnt_++;
 }
 
-void PerfModelSampling::samplesToResult_()
+#include <iostream>
+#include <string>
+#include <QFile>
+
+void PerfModelSampling::samplesToResult_(const QString& pathToFile)
 {
+    const std::string addr2line("addr2line");
+    const std::string cmd = addr2line + " -e " + pathToFile.toStdString() + "0x";
+
+    std::map<double, uint64_t> tmpMap;
+
     for (auto i : this->samplesMap_)
+        tmpMap.insert(std::make_pair((static_cast<double>(i.second) / static_cast<double>(this->samplesCnt_) * 100.0), i.first));
+
+    for (auto i : tmpMap)
     {
+        QString addr = QString("0x") + QString::number(i.second, 16);
+
+        std::string cmd = "addr2line -e " + pathToFile.toStdString() + " " + addr.toStdString();
+
+        boost::process::ipstream out;
+        boost::process::system(cmd, boost::process::std_out > "addr2line.log");
+
+        QFile f("addr2line.log");
+        if (!f.open(QIODevice::ReadOnly | QFile::Text))
+            std::cerr << "err" << std::endl;
+
+        QTextStream in(&f);
+
         QString value;
-        value += "0x";
-        value += QString::number(i.first, 16);
+        value += addr;
         value += "\t";
-        value += QString::number(static_cast<double>(i.second) / static_cast<double>(this->samplesCnt_) * 100.0);
-        value += " %";
+        value += QString::number(i.first);
+        value += "% == ";
+        value += in.readAll();
         this->result_.add(qMakePair(IViewType::source, value));
     }
 }

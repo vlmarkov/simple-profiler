@@ -9,7 +9,7 @@
 #include <include/profiler/perf/perf-profiler-events.hpp>
 
 
-void PerfProfilerEvents::run(const QString& pathToFile, BaseProfiler& baseProfiler)
+void PerfProfilerEvents::run(const QString& pathTo, BaseProfiler& baseProfiler)
 {
     try
     {
@@ -22,21 +22,21 @@ void PerfProfilerEvents::run(const QString& pathToFile, BaseProfiler& baseProfil
         std::unique_ptr<IController> controller(std::make_unique<PerfController>(*model.get()));
         std::unique_ptr<IView>       view(std::make_unique<PerfViewEvents>(*model.get(), *controller.get(), baseProfiler));
 
-        controller->requestProcess(pathToFile);
+        controller->process(pathTo);
 
         // View instance will emit a signal
     }
     catch (Exception& exception)
     {
-        qDebug() << QString(exception.what()) << " : " << exception.code();
+        baseProfiler.setResult(QString(exception.what())+ QString::number(exception.code()));
     }
     catch (std::exception& exception)
     {
-        qDebug() << QString(exception.what());
+        baseProfiler.setResult(QString(exception.what()));
     }
     catch (...)
     {
-        qDebug() << QString("Caught unexpected exception");
+        baseProfiler.setResult(QString("Caught unexpected exception"));
     }
 }
 

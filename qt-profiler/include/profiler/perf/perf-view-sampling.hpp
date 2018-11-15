@@ -20,5 +20,5 @@ class PerfViewSampling : public IView
         PerfViewSampling(IModel& model, IController& controller, BaseProfiler& baseProf);
         ~PerfViewSampling() override = default;
 
-        void update(const Event& event) override;
+        void update(const IObserverEvent& event) override;
 };

@@ -12,7 +12,7 @@ void MemLeakProfiler::run(const QString& request, BaseProfiler& baseProf)
     std::unique_ptr<IController> controller(std::make_unique<MemLeakController>(*model.get()));
     std::unique_ptr<IView>       view(std::make_unique<MemLeakView>(*model.get(), *controller.get(), baseProf));
 
-    controller->requestProcess(request);
+    controller->process(request);
 
     // View instance will emit a signal
 }

@@ -13,5 +13,5 @@ class IProfiler
         IProfiler& operator=(const IProfiler&) = delete;
 
     public:
-        virtual void run(const QString& pathToFile, BaseProfiler& baseProfiler) = 0;
+        virtual void run(const QString& pathTo, BaseProfiler& baseProfiler) = 0;
 };

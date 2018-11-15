@@ -11,6 +11,6 @@ class PerfProfilerEvents : public IProfiler
         PerfProfilerEvents()  = default;
         ~PerfProfilerEvents() = default;
 
-        void run(const QString& pathToFile, BaseProfiler& baseProfiler) override;
+        void run(const QString& pathTo, BaseProfiler& baseProfiler) override;
 };
 

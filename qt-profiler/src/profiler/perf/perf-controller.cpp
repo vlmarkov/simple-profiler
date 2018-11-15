@@ -10,10 +10,10 @@ PerfController::PerfController(IModel& model) noexcept : model_(model)
     ;
 }
 
-void PerfController::requestProcess(const QString& request)
+void PerfController::process(const QString& pathTo)
 {
     if (::getuid() != 0 && ::geteuid() != 0)
-        Observable::notify(Event::sudoRight);
+        Observable::notify(IObserverEvent::sudoRight);
     else
-        model_.requestProcess(request);
+        model_.process(pathTo);
 }

@@ -2,6 +2,7 @@
 #include <QTextStream>
 
 #include <stdlib.h>
+#include <boost/process.hpp>
 
 #include <include/profiler/mem-leak/mem-leak-model.hpp>
 
@@ -10,28 +11,26 @@ MemLeakModel::MemLeakModel() noexcept :
     fileLib_(QString("lib_hook_malloc.so")),
     fileLog_(QString("log")) { }
 
-void MemLeakModel::requestProcess(const QString& request)
+void MemLeakModel::process(const QString& pathTo)
 {
     QMap<QString, MemLeakObj> leaks;
 
-    auto event = Event::fail;
+    auto event = IObserverEvent::fail;
 
     try {
-        run_(request);
+        this->run_(pathTo);
+        this->read_(leaks);
+        this->leakToSourceCode_(leaks, pathTo);
 
-        read_(leaks);
-
-        leakToSourceCode_(leaks, request);
-
-        event = Event::succses;
+        event = IObserverEvent::succses;
     }
     catch (QString& exception)
     {
-        result_.add(qMakePair(IViewType::error , exception));
+        this->result_.add(qMakePair(IViewType::error , exception));
     }
     catch (...)
     {
-        result_.add(qMakePair(IViewType::error , QString("Unknow error")));
+        this->result_.add(qMakePair(IViewType::error , QString("Unknown error")));
     }
 
     Observable::notify(event);
@@ -42,12 +41,14 @@ Result MemLeakModel::getResult() noexcept
     return result_;
 }
 
-void MemLeakModel::run_(const QString& request)
+#include <string>
+
+void MemLeakModel::run_(const QString& pathTo)
 {
-    QString cmd("LD_PRELOAD=./" + fileLib_ + " " + request + " 2>" + fileLog_);
+    QString cmd("LD_PRELOAD=./" + this->fileLib_ + " " + pathTo + " 2>" + this->fileLog_);
 
     if (system(cmd.toStdString().c_str()) != 0)
-        throw QString("Warning: Can't run: " + request);
+        throw QString("Warning: Can't run: " + pathTo);
 }
 
 void MemLeakModel::read_(QMap<QString, MemLeakObj>& map)
@@ -117,10 +118,8 @@ void MemLeakModel::leakToSourceCode_(const QMap<QString, MemLeakObj>& map, const
 
     for (auto iter : map)
     {
-        QString cmd("addr2line -e " + elf + " " + iter.address + " > " + fileLog_);
-
-        if (system(cmd.toStdString().c_str()) != 0)
-            throw QString("Warning: Can't process addr2line for: " + elf);
+        QString cmd("addr2line -e " + elf + " " + iter.address);
+        boost::process::system(cmd.toStdString(), boost::process::std_out > fileLog_.toStdString());
 
         QFile addr2LineFile(fileLog_);
         if (!addr2LineFile.open(QIODevice::ReadOnly | QFile::Text))
@@ -142,10 +141,10 @@ void MemLeakModel::leakToSourceCode_(const QMap<QString, MemLeakObj>& map, const
 
         // Delete temporal log file
         if (remove(fileLog_.toUtf8().constData()) != 0)
-            throw QString("Warning: Can't delete file: " + fileLog_);
+            throw QString("Warning: Can't delete file: " + this->fileLog_);
     }
 
-    result_ = result;
+    this->result_ = result;
 }
 
 void MemLeakModel::readSourceCode_(const QString& path, const int ln, Result& result)

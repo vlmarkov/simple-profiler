@@ -23,19 +23,19 @@ PerfModelEvents::PerfModelEvents(QVector<uint32_t>& hw) : hw_(hw)
     this->hw_val_ = QVector<uint64_t>(this->hw_.size());
 }
 
-void PerfModelEvents::requestProcess(const QString& pathToFile)
+void PerfModelEvents::process(const QString& pathTo)
 {
     try
     {
-        boost::process::child c(pathToFile.toStdString());
+        boost::process::child child(pathTo.toStdString());
 
-        auto perfEvent = PerfEvent(this->pe_, c.id(), this->hw_, this->hw_id_);
+        auto perfEvent = PerfEvent(this->pe_, child.id(), this->hw_, this->hw_id_);
 
         perfEvent.start();
 
-        c.wait();
+        child.wait();
 
-        qDebug() << "Child " << c.id() << " ended with code " << c.exit_code();
+        qDebug() << "Child " << child.id() << " ended with code " << child.exit_code();
 
         perfEvent.stop();
 

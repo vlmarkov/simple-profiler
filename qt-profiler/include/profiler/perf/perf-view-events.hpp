@@ -18,5 +18,5 @@ class PerfViewEvents : public IView
         PerfViewEvents(IModel& model, IController& controller, BaseProfiler& baseProf);
         ~PerfViewEvents() override = default;
 
-        void update(const Event& event) override;
+        void update(const IObserverEvent& event) override;
 };

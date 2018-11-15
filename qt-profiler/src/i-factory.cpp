@@ -16,5 +16,5 @@ auto IFactory::createProfiler(const IFactoryType& type) -> std::shared_ptr<IProf
         case IFactoryType::perf_sample:
             return std::make_shared<PerfProfilerSampling>();
     }
-    throw Exception("Failed to create profiler()");
+    throw Exception("Failed to create profiler");
 }

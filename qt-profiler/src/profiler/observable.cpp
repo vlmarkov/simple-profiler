@@ -8,7 +8,7 @@ void Observable::add(IObserver& observer) noexcept
     observers_.push_back(&observer);
 }
 
-void Observable::notify(const Event& event)
+void Observable::notify(const IObserverEvent& event)
 {
     for (auto i : observers_)
         i->update(event);

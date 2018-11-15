@@ -13,5 +13,5 @@ class MemLeakController : public IController
         MemLeakController(IModel& model) noexcept;
         ~MemLeakController() override = default;
 
-        void requestProcess(const QString& str) override;
+        void process(const QString& pathTo) override;
 };

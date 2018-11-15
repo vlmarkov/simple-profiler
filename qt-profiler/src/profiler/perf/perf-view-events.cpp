@@ -10,7 +10,7 @@ PerfViewEvents::PerfViewEvents(IModel& model, IController& controller, BaseProfi
     controller_.Observable::add(*this);
 }
 
-void PerfViewEvents::update(const Event& event)
+void PerfViewEvents::update(const IObserverEvent& event)
 {
     return; // TODO
 }

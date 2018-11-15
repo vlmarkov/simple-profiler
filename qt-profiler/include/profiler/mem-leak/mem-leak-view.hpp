@@ -20,5 +20,5 @@ class MemLeakView : public IView
         MemLeakView(IModel& model, IController& controller, BaseProfiler& baseProf);
         ~MemLeakView() override = default;
 
-        void update(const Event& event) override;
+        void update(const IObserverEvent& event) override;
 };

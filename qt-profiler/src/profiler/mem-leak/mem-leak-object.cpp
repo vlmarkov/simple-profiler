@@ -8,4 +8,7 @@ MemLeakObj::MemLeakObj(QString addr,
     address(addr),
     function(fun),
     size(sz),
-    pointer(ptr) { }
+    pointer(ptr)
+{
+    ;
+}

@@ -6,7 +6,7 @@ MemLeakController::MemLeakController(IModel& model) noexcept : model_(model)
     ;
 }
 
-void MemLeakController::requestProcess(const QString& request)
+void MemLeakController::process(const QString& pathTo)
 {
-    model_.requestProcess(request);
+    model_.process(pathTo);
 }

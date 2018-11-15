@@ -23,6 +23,6 @@ class PerfModelEvents : public IModel
         explicit PerfModelEvents(QVector<uint32_t>& hw);
         ~PerfModelEvents() = default;
 
-        void requestProcess(const QString& request) override;
+        void process(const QString& pathTo) override;
         Result getResult() noexcept override;
 };

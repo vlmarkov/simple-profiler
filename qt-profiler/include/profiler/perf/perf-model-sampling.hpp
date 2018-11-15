@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QString>
-
 #include <map>
+
+#include <QString>
 
 #include <include/profiler/i-model.hpp>
 #include <include/profiler/perf/perf-utils.hpp>
@@ -18,7 +18,7 @@ class PerfModelSampling : public IModel
 
         std::map<uint64_t, double> samplesMap_;
 
-        void samplesToResult_();
+        void samplesToResult_(const QString& pathToFile);
 
         void sampleCopy_(const RecordSample& sample);
 
@@ -28,6 +28,6 @@ class PerfModelSampling : public IModel
         explicit PerfModelSampling(uint32_t samplePeriod = 100000);
         ~PerfModelSampling() = default;
 
-        void requestProcess(const QString& request) override;
+        void process(const QString& pathTo) override;
         Result getResult() noexcept override;
 };

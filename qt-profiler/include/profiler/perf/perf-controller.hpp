@@ -13,5 +13,5 @@ class PerfController : public IController
         PerfController(IModel& model) noexcept;
         ~PerfController() override = default;
 
-        void requestProcess(const QString& request) override;
+        void process(const QString& pathTo) override;
 };

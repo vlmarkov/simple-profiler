@@ -11,5 +11,5 @@ class PerfProfilerSampling : public IProfiler
         PerfProfilerSampling()  = default;
         ~PerfProfilerSampling() = default;
 
-        void run(const QString& pathToFile, BaseProfiler& baseProfiler) override;
+        void run(const QString& pathTo, BaseProfiler& baseProfiler) override;
 };

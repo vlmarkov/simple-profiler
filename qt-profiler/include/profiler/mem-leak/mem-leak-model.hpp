@@ -26,6 +26,6 @@ class MemLeakModel : public IModel
         MemLeakModel() noexcept;
         ~MemLeakModel() override = default;
 
-        void requestProcess(const QString& request) override;
+        void process(const QString& request) override;
         Result getResult() noexcept override;
 };

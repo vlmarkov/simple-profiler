@@ -46,7 +46,6 @@ HEADERS += \
     include/i-factory.hpp \
     include/i-profiler.hpp \
     include/base-profiler.hpp \
-    include/profiler/event.hpp \
     include/profiler/result.hpp \
     include/profiler/exception.hpp \
     include/profiler/observable.hpp \
