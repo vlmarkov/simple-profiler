@@ -9,17 +9,9 @@ void BaseProfiler::runMemoryCheck(const QString& pathTo)
         auto profiler = IFactory::createProfiler(IFactoryType::mem_leak);
         profiler->run(pathTo, *this);
     }
-    catch (Exception& exception)
-    {
-        this->setResult(QString(exception.what())+ QString::number(exception.code()));
-    }
-    catch (std::exception& exception)
-    {
-        this->setResult(QString(exception.what()));
-    }
     catch (...)
     {
-        this->setResult(QString("Caught unexpected exception"));
+        this->setResult(QString("Can't run profiler"));
     }
 }
 
@@ -30,17 +22,9 @@ void BaseProfiler::runPerfomanceSampleCheck(const QString& pathTo)
         auto profiler = IFactory::createProfiler(IFactoryType::perf_sample);
         profiler->run(pathTo, *this);
     }
-    catch (Exception& exception)
-    {
-        this->setResult(QString(exception.what())+ QString::number(exception.code()));
-    }
-    catch (std::exception& exception)
-    {
-        this->setResult(QString(exception.what()));
-    }
     catch (...)
     {
-        this->setResult(QString("Caught unexpected exception"));
+        this->setResult(QString("Can't run profiler"));
     }
 }
 
@@ -51,17 +35,9 @@ void BaseProfiler::runPerfomanceEventCheck(const QString& pathTo)
         auto profiler = IFactory::createProfiler(IFactoryType::perf_event);
         profiler->run(pathTo, *this);
     }
-    catch (Exception& exception)
-    {
-        this->setResult(QString(exception.what())+ QString::number(exception.code()));
-    }
-    catch (std::exception& exception)
-    {
-        this->setResult(QString(exception.what()));
-    }
     catch (...)
     {
-        this->setResult(QString("Caught unexpected exception"));
+        this->setResult(QString("Can't run profiler"));
     }
 }
 
