@@ -16,6 +16,6 @@ class Result
         ~Result() = default;
 
         QVector<QPair<IViewType, QString>> get() noexcept;
-        void add(const QPair<IViewType, QString>& dataPair) noexcept;
-        void clear() noexcept;
+        void add(const QPair<IViewType, QString>& dataPair);
+        void clear();
 };

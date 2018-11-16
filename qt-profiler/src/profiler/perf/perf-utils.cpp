@@ -69,5 +69,5 @@ RecordSample RingBuffer::sampleGet()
 
 unsigned RingBuffer::mmapSizeGet_()
 {
-    return ((1U << 8) + 1) * ::sysconf(_SC_PAGESIZE);
+    return static_cast<unsigned>(((1U << 8) + 1) * ::sysconf(_SC_PAGESIZE));
 }

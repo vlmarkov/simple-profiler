@@ -1,15 +1,13 @@
 #pragma once
 
-#include <QString>
-
 #include <include/i-profiler.hpp>
 
 
-class PerfProfilerEvents : public IProfiler
+class PerfEventsProfiler : public IProfiler
 {
     public:
-        PerfProfilerEvents()  = default;
-        ~PerfProfilerEvents() = default;
+        PerfEventsProfiler()  = default;
+        ~PerfEventsProfiler() = default;
 
         void run(const QString& pathTo, BaseProfiler& baseProfiler) override;
 };

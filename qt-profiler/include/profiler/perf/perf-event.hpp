@@ -12,8 +12,10 @@
 #include <linux/perf_event.h>
 
 
-// This is a wrapper for a 'perf_event_open'
-// See for more details http://man7.org/linux/man-pages/man2/perf_event_open.2.html
+/*
+ * This is a wrapper for a 'perf_event_open'
+ * See for more details http://man7.org/linux/man-pages/man2/perf_event_open.2.html
+ */
 class PerfEvent
 {
     public:
@@ -24,12 +26,12 @@ class PerfEvent
         void start();
         void stop();
 
-        long getFd();
+        int getFd();
 
     private:
-        long fd_;
+        int fd_;
         bool isGrouping_;
 
-        long open_(struct perf_event_attr& pe, pid_t pid, int cpu, int gFd, unsigned long flags);
+        int open_(struct perf_event_attr& pe, pid_t pid, int cpu, int gFd, unsigned long flags);
         void close_();
 };

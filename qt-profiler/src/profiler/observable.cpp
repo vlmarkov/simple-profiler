@@ -3,7 +3,7 @@
 #include <include/profiler/observable.hpp>
 
 
-void Observable::add(IObserver& observer) noexcept
+void Observable::add(IObserver& observer)
 {
     observers_.push_back(&observer);
 }

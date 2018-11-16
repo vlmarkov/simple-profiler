@@ -9,7 +9,7 @@
 #include <include/profiler/perf/perf-event.hpp>
 
 
-class PerfModelSampling : public IModel
+class PerfSamplingModel : public IModel
 {
     private:
         struct perf_event_attr pe_;
@@ -25,8 +25,8 @@ class PerfModelSampling : public IModel
         Result result_;
 
     public:
-        explicit PerfModelSampling(uint32_t samplePeriod = 100000);
-        ~PerfModelSampling() = default;
+        explicit PerfSamplingModel(uint32_t samplePeriod = 100000);
+        ~PerfSamplingModel() = default;
 
         void process(const QString& pathTo) override;
         Result getResult() noexcept override;

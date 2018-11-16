@@ -41,8 +41,6 @@ Result MemLeakModel::getResult() noexcept
     return result_;
 }
 
-#include <string>
-
 void MemLeakModel::run_(const QString& pathTo)
 {
     QString cmd("LD_PRELOAD=./" + this->fileLib_ + " " + pathTo + " 2>" + this->fileLog_);

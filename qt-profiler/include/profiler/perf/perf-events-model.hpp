@@ -8,7 +8,7 @@
 #include <include/profiler/perf/perf-event.hpp>
 
 
-class PerfModelEvents : public IModel
+class PerfEventsModel : public IModel
 {
     private:
         struct perf_event_attr pe_;
@@ -20,8 +20,8 @@ class PerfModelEvents : public IModel
         Result result_;
 
     public:
-        explicit PerfModelEvents(QVector<uint32_t>& hw);
-        ~PerfModelEvents() = default;
+        explicit PerfEventsModel(QVector<uint32_t>& hw);
+        ~PerfEventsModel() = default;
 
         void process(const QString& pathTo) override;
         Result getResult() noexcept override;

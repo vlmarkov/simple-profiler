@@ -4,10 +4,10 @@
 
 #include <include/profiler/exception.hpp>
 #include <include/profiler/perf/perf-utils.hpp>
-#include <include/profiler/perf/perf-model-events.hpp>
+#include <include/profiler/perf/perf-events-model.hpp>
 
 
-PerfModelEvents::PerfModelEvents(QVector<uint32_t>& hw) : hw_(hw)
+PerfEventsModel::PerfEventsModel(QVector<uint32_t>& hw) : hw_(hw)
 {
     ::memset(&this->pe_, 0, sizeof(struct perf_event_attr));
 
@@ -23,7 +23,7 @@ PerfModelEvents::PerfModelEvents(QVector<uint32_t>& hw) : hw_(hw)
     this->hw_val_ = QVector<uint64_t>(this->hw_.size());
 }
 
-void PerfModelEvents::process(const QString& pathTo)
+void PerfEventsModel::process(const QString& pathTo)
 {
     try
     {
@@ -42,7 +42,7 @@ void PerfModelEvents::process(const QString& pathTo)
         {
             // TODO: move to view module
             char buf[4096] = { 0 };
-            struct ReadFormat *rf = (struct ReadFormat *)buf;
+            ReadFormat *rf = reinterpret_cast<ReadFormat*>(buf);
 
             ::read(perfEvent.getFd(), buf, sizeof(buf));
 
@@ -64,19 +64,19 @@ void PerfModelEvents::process(const QString& pathTo)
     }
     catch (Exception& exception)
     {
-        qDebug() << QString(exception.what()) << " : " << exception.code();
+        this->result_.add(qMakePair(IViewType::error , QString(exception.what())));
     }
     catch (std::exception& exception)
     {
-        qDebug() << QString(exception.what());
+        this->result_.add(qMakePair(IViewType::error , QString(exception.what())));
     }
     catch (...)
     {
-        qDebug() << QString("Caught unexpected exception");
+        this->result_.add(qMakePair(IViewType::error , QString("Unknow error")));
     }
 }
 
-Result PerfModelEvents::getResult() noexcept
+Result PerfEventsModel::getResult() noexcept
 {
     return result_;
 }

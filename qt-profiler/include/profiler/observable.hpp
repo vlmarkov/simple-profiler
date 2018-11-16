@@ -14,6 +14,6 @@ class Observable
         Observable() = default;
         ~Observable() = default;
 
-        void add(IObserver& observer) noexcept;
+        void add(IObserver& observer);
         void notify(const IObserverEvent& event);
 };

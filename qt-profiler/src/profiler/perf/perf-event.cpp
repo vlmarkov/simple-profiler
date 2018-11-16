@@ -35,7 +35,7 @@ PerfEvent::~PerfEvent()
     }
     catch (...)
     {
-        ; // Do nothing
+        ; // Do not propagate exception
     }
 }
 
@@ -56,19 +56,19 @@ void PerfEvent::stop()
         throw Exception("Failed to stop(), " + QString(strerror(errno)), errno);
 }
 
-long PerfEvent::getFd()
+int PerfEvent::getFd()
 {
     return this->fd_;
 }
 
-long PerfEvent::open_(struct perf_event_attr& pe, pid_t pid, int cpu, int gFd, unsigned long flags)
+int PerfEvent::open_(struct perf_event_attr& pe, pid_t pid, int cpu, int gFd, unsigned long flags)
 {
     // Glibc does not provide a wrapper for this system call
     auto fd = ::syscall(__NR_perf_event_open, &pe, pid, cpu, gFd, flags);
     if (fd < 0)
         throw Exception(QString("Failed to perf_event_open(), not valid fd"));
 
-    return fd;
+    return static_cast<int>(fd);
 }
 
 void PerfEvent::close_()

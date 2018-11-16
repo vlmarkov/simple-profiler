@@ -27,13 +27,13 @@ SOURCES += \
 SOURCES += \
     src/profiler/perf/perf-utils.cpp \
     src/profiler/perf/perf-event.cpp \
-    src/profiler/perf/perf-profiler-events.cpp \
-    src/profiler/perf/perf-profiler-sampling.cpp \
     src/profiler/perf/perf-controller.cpp \
-    src/profiler/perf/perf-model-events.cpp \
-    src/profiler/perf/perf-model-sampling.cpp \
-    src/profiler/perf/perf-view-sampling.cpp \
-    src/profiler/perf/perf-view-events.cpp
+    src/profiler/perf/perf-events-view.cpp \
+    src/profiler/perf/perf-events-model.cpp \
+    src/profiler/perf/perf-events-profiler.cpp \
+    src/profiler/perf/perf-sampling-view.cpp \
+    src/profiler/perf/perf-sampling-model.cpp \
+    src/profiler/perf/perf-sampling-profiler.cpp
 
 
 # Default rules for deployment.
@@ -67,13 +67,13 @@ HEADERS += \
 HEADERS += \
     include/profiler/perf/perf-event.hpp \
     include/profiler/perf/perf-utils.hpp \
-    include/profiler/perf/perf-profiler-events.hpp \
-    include/profiler/perf/perf-profiler-sampling.hpp \
     include/profiler/perf/perf-controller.hpp \
-    include/profiler/perf/perf-model-events.hpp \
-    include/profiler/perf/perf-model-sampling.hpp \
-    include/profiler/perf/perf-view-events.hpp \
-    include/profiler/perf/perf-view-sampling.hpp
+    include/profiler/perf/perf-events-view.hpp \
+    include/profiler/perf/perf-events-model.hpp \
+    include/profiler/perf/perf-events-profiler.hpp \
+    include/profiler/perf/perf-sampling-view.hpp \
+    include/profiler/perf/perf-sampling-model.hpp \
+    include/profiler/perf/perf-sampling-profiler.hpp
 
 
 SHARED_LIB_SRC = ../hook-malloc/src/hook_malloc.c

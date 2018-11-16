@@ -1,16 +1,12 @@
-#include <memory>
-
-#include <include/profiler/mem-leak/mem-leak-view.hpp>
-#include <include/profiler/mem-leak/mem-leak-model.hpp>
+#include <include/i-factory.hpp>
 #include <include/profiler/mem-leak/mem-leak-profiler.hpp>
-#include <include/profiler/mem-leak/mem-leak-controller.hpp>
 
 
 void MemLeakProfiler::run(const QString& request, BaseProfiler& baseProf)
 {
-    std::unique_ptr<IModel>      model(std::make_unique<MemLeakModel>());
-    std::unique_ptr<IController> controller(std::make_unique<MemLeakController>(*model.get()));
-    std::unique_ptr<IView>       view(std::make_unique<MemLeakView>(*model.get(), *controller.get(), baseProf));
+    auto model      = IFactory::createModel(IFactoryType::mem_leak);
+    auto controller = IFactory::createController(IFactoryType::mem_leak, model);
+    auto view       = IFactory::createView(IFactoryType::mem_leak, model, controller, baseProf);
 
     controller->process(request);
 
