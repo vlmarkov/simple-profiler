@@ -1,0 +1,16 @@
+#include <include/profiler/i-model.hpp>
+#include <include/profiler/i-controller.hpp>
+#include <include/profiler/perf/perf-events-view.hpp>
+
+
+PerfEventsView::PerfEventsView(IModel& model, IController& controller, BaseProfiler& baseProf):
+    model_(model), controller_(controller), baseProf_(baseProf)
+{
+    model_.Observable::add(*this);
+    controller_.Observable::add(*this);
+}
+
+void PerfEventsView::update(const IObserverEvent& event)
+{
+    return; // TODO
+}
