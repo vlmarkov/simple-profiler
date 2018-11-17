@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <boost/process.hpp>
 
+#include <include/profiler/exception.hpp>
 #include <include/profiler/mem-leak/mem-leak-model.hpp>
 #include <include/profiler/mem-leak/mem-leak-utils.hpp>
 
@@ -33,7 +34,7 @@ void MemLeakModel::process(const QString& pathTo)
     try {
         QString cmd("LD_PRELOAD=./" + this->fileLib_ + " " + pathTo + " 2> " + this->fileLogLeak_);
         if (system(cmd.toStdString().c_str()) != 0)
-            throw QString("Warning: Can't run: " + pathTo);
+            throw Exception(QString("Warning: Can't run: " + pathTo));
 
         FileReaderMemLeak fileLeak(this->fileLogLeak_);
         auto leaks = fileLeak.readMemLeaks();
@@ -52,15 +53,19 @@ void MemLeakModel::process(const QString& pathTo)
                 fileSource.readSource(this->result_);
 
                 if (remove(this->fileLogAddr_.toUtf8().constData()) != 0)
-                    throw QString("Warning: Can't delete file: " + this->fileLogAddr_);
+                    throw Exception(QString("Warning: Can't delete file: " + this->fileLogAddr_));
             }
         }
 
         event = IObserverEvent::succses;
     }
-    catch (QString& exception)
+    catch (Exception& exception)
     {
-        this->result_.add(qMakePair(IViewType::error , exception));
+        this->result_.add(qMakePair(IViewType::error , QString(exception.what())));
+    }
+    catch (std::exception& exception)
+    {
+        this->result_.add(qMakePair(IViewType::error , QString(exception.what())));
     }
     catch (...)
     {

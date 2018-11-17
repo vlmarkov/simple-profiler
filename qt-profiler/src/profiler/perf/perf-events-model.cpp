@@ -72,7 +72,7 @@ void PerfEventsModel::process(const QString& pathTo)
     }
     catch (...)
     {
-        this->result_.add(qMakePair(IViewType::error , QString("Unknow error")));
+        this->result_.add(qMakePair(IViewType::error , QString("Unknown error")));
     }
 }
 

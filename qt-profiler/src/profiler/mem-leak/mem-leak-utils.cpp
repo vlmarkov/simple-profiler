@@ -1,6 +1,7 @@
 #include <QTextStream>
 
 #include <include/profiler/i-view.hpp>
+#include <include/profiler/exception.hpp>
 #include <include/profiler/mem-leak/mem-leak-utils.hpp>
 
 
@@ -20,7 +21,7 @@ FileReader::FileReader(const QString& pathTo)
 {
     this->file_.setFileName(pathTo);
     if (!this->file_.open(QIODevice::ReadOnly | QFile::Text))
-        throw QString("Warning: Can't open file: " + pathTo);
+        throw Exception(QString("Warning: Can't open file: " + pathTo));
 }
 
 FileReader::~FileReader()
