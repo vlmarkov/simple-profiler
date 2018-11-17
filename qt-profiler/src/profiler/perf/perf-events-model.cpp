@@ -25,6 +25,8 @@ PerfEventsModel::PerfEventsModel(QVector<uint32_t>& hw) : hw_(hw)
 
 void PerfEventsModel::process(const QString& pathTo)
 {
+    auto event = IObserverEvent::fail;
+
     try
     {
         boost::process::child child(pathTo.toStdString());
@@ -35,32 +37,32 @@ void PerfEventsModel::process(const QString& pathTo)
 
         child.wait();
 
-        qDebug() << "Child " << child.id() << " ended with code " << child.exit_code();
-
         perfEvent.stop();
 
+        char buf[4096] = { 0 };
+        ReadFormat *rf = reinterpret_cast<ReadFormat*>(buf);
+
+        ::read(perfEvent.getFd(), buf, sizeof(buf));
+
+        for (auto i = 0; i < rf->nr; i++)
         {
-            // TODO: move to view module
-            char buf[4096] = { 0 };
-            ReadFormat *rf = reinterpret_cast<ReadFormat*>(buf);
-
-            ::read(perfEvent.getFd(), buf, sizeof(buf));
-
-            for (size_t i = 0; i < rf->nr; i++)
+            for (auto j = 0; j < rf->nr; j++)
             {
-                for (size_t j = 0; j < rf->nr; j++)
+                if (rf->values[i].id == this->hw_id_[j])
                 {
-                   if (rf->values[i].id == this->hw_id_[j])
-                    {
-                        this->hw_val_[j] = rf->values[i].value;
-                        break;
-                    }
+                    this->hw_val_[j] = rf->values[i].value;
+                    break;
                 }
             }
-
-            qDebug() << "PERF_COUNT_HW_CPU_CYCLES   : " << (this->hw_val_[0] ? this->hw_val_[0] : -1);
-            qDebug() << "PERF_COUNT_HW_INSTRUCTIONS : " << (this->hw_val_[1] ? this->hw_val_[1] : -1);
         }
+
+        QString valueCycles = "PERF_COUNT_HW_CPU_CYCLES   : " + QString::number(this->hw_val_[0] ? this->hw_val_[0] : -1);
+        QString valueInstr  = "PERF_COUNT_HW_INSTRUCTIONS : " + QString::number(this->hw_val_[1] ? this->hw_val_[1] : -1);
+
+        this->result_.add(qMakePair(IViewType::value, valueCycles));
+        this->result_.add(qMakePair(IViewType::value, valueInstr));
+
+        event = IObserverEvent::succses;
     }
     catch (Exception& exception)
     {
@@ -74,6 +76,8 @@ void PerfEventsModel::process(const QString& pathTo)
     {
         this->result_.add(qMakePair(IViewType::error , QString("Unknown error")));
     }
+
+    Observable::notify(event);
 }
 
 Result PerfEventsModel::getResult() noexcept

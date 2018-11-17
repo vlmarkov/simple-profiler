@@ -40,18 +40,62 @@ void PerfSamplingView::update(const IObserverEvent& event)
 
 QString PerfSamplingView::toHtml_(Result result) noexcept
 {
+    auto firstHotSpot = true;
+    auto i = 0, cnt = 0;
+
+    QVector<QString> colors;
+    colors.push_back("<font color=\"red\">");
+    colors.push_back("<font color=\"orange\">");
+    colors.push_back("<font color=\"blue\">");
+
     QString htmlStr;
-
     htmlStr += "<section><p></p><p></p>";
-    htmlStr += "<table border = 1 bgcolor=\"white\">";
-    htmlStr += "<tr><th>**** ****</th><th>**** ****</th></tr>";
+    htmlStr += "<table width=\"800\" border=2 bgcolor=\"white\">";
 
-    for (auto i : result.get())
+    for (auto iter : result.get())
     {
-        if (i.first == IViewType::error)
-            htmlStr += "<tr><td style='color:red'>" + (i.second) + "</td><td></td></tr>";
-        else
-            htmlStr += "<tr><td>" + (i.second) + "</td><td> source code line</td></tr>";
+        switch (iter.first)
+        {
+            case IViewType::source:
+            {
+                htmlStr += "</table>";
+
+                if (firstHotSpot)
+                {
+                    firstHotSpot = false;
+                }
+                else
+                {
+                    htmlStr += "<p></p>";
+                }
+
+                htmlStr += "<table width=\"800\" border=2 bgcolor=\"white\">";
+                htmlStr += "<tr><td> File: " + (iter.second) + "</td></tr>";
+                break;
+            }
+            case IViewType::value:
+            {
+                htmlStr += "<tr><td>";
+                auto idx = (i > colors.size() - 1) ? (colors.size() - 1) : i;
+                if (cnt++ == colors.size())
+                {
+                    i++;
+                    cnt = 0;
+                }
+                htmlStr += colors.at(idx);
+                htmlStr += (iter.second) + "</td></tr>";
+                break;
+            }
+            case IViewType::error:
+            {
+                htmlStr += "<tr><td>" + colors.at(0) + (iter.second) + "</td></tr>";
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
     }
 
     htmlStr += "</table>";

@@ -14,6 +14,8 @@ class PerfEventsView : public IView
         IController&  controller_;
         BaseProfiler& baseProf_;
 
+        QString toHtml_(Result result) noexcept;
+
     public:
         PerfEventsView(IModel& model, IController& controller, BaseProfiler& baseProf);
         ~PerfEventsView() override = default;

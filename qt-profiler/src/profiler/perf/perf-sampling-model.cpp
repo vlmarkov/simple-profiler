@@ -5,7 +5,6 @@
 
 #include <boost/process.hpp>
 
-#include <QFile>
 #include <QTextStream>
 
 #include <include/profiler/exception.hpp>
@@ -48,7 +47,7 @@ void PerfSamplingModel::process(const QString& pathTo)
         {
             if (ringBuffer.hasData())
             {
-                PerfSamplingModel::sampleCopy_(ringBuffer.sampleGet());
+                this->sampleCopy_(ringBuffer.sampleGet());
             }
         }
 
@@ -56,7 +55,7 @@ void PerfSamplingModel::process(const QString& pathTo)
 
         perfEvent.stop();
 
-        PerfSamplingModel::samplesToResult_(pathTo);
+        this->samplesToResult_(pathTo);
         event = IObserverEvent::succses;
     }
     catch (Exception& exception)
@@ -87,46 +86,42 @@ void PerfSamplingModel::sampleCopy_(const RecordSample& sample)
 
     auto find = this->samplesMap_.find(sample.ip);
     if (find != this->samplesMap_.end())
+    {
         find->second++;
+    }
     else
+    {
         this->samplesMap_.insert(std::make_pair(sample.ip, 1.0));
+    }
 
     this->samplesCnt_++;
 }
 
 void PerfSamplingModel::samplesToResult_(const QString& pathToFile)
 {
-    const std::string addr2line("addr2line");
-    const std::string cmd = addr2line + " -e " + pathToFile.toStdString() + "0x";
+    const std::string cmd = "addr2line -e " + pathToFile.toStdString() + "0x";
 
     std::map<double, uint64_t> tmpMap;
 
     for (auto i : this->samplesMap_)
         tmpMap.insert(std::make_pair((static_cast<double>(i.second) / static_cast<double>(this->samplesCnt_) * 100.0), i.first));
 
-    for (auto i : tmpMap)
+    for (auto iter = tmpMap.rbegin(); iter != tmpMap.rend(); ++iter)
     {
-        QString addr = QString("0x") + QString::number(i.second, 16);
+        QString addr = QString("0x") + QString::number(iter->second, 16);
 
         std::string cmd = "addr2line -e " + pathToFile.toStdString() + " " + addr.toStdString();
 
         boost::process::ipstream out;
         boost::process::system(cmd, boost::process::std_out > "addr2line.log");
 
-        QFile file("addr2line.log");
-        if (!file.open(QIODevice::ReadOnly | QFile::Text))
-            std::cerr << "err" << std::endl;
+        FileReaderHotSpot fileHotSpot("addr2line.log");
 
-        QTextStream in(&file);
+        QString value = addr + " : " + QString::number(iter->first) + "%";
 
-        QString value;
-        value += addr;
-        value += "\t";
-        value += QString::number(i.first);
-        value += "% == ";
-        value += in.readAll();
-        this->result_.add(qMakePair(IViewType::source, value));
-
-        file.close();
+        this->result_.add(qMakePair(IViewType::source, fileHotSpot.read()));
+        this->result_.add(qMakePair(IViewType::value, value));
     }
+
+    remove("addr2line.log");
 }

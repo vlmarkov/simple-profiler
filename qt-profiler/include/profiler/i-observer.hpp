@@ -5,6 +5,7 @@
 
 enum class IObserverEvent { fail, succses, sudoRight };
 
+
 // This is an interface class
 class IObserver
 {

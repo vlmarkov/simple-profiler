@@ -75,6 +75,13 @@ QString MemLeakView::toHtml_(Result result) noexcept
                 break;
             }
 
+            case IViewType::empty:
+            {
+                htmlStr += "<table width=\"800\" border=2 bgcolor=\"white\">";
+                htmlStr += "<tr><th align=\"center\">" + (i.second) + "</th></tr>";
+                break;
+            }
+
             default:
             {
                 break;

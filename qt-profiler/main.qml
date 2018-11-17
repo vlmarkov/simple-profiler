@@ -39,20 +39,29 @@ ApplicationWindow {
     }
 
     FileDialog {
-        id: mDialog
+        id: memDialog
         title: "Please choose a file"
         onAccepted:
         {
-            onAccepted: baseProfiler.runMemoryCheck(mDialog.fileUrl.toString().replace("file://", ""))
+            onAccepted: baseProfiler.runMemoryCheck(memDialog.fileUrl.toString().replace("file://", ""))
         }
     }
 
     FileDialog {
-        id: pDialog
+        id: samplingDialog
         title: "Please choose a file"
         onAccepted:
         {
-            onAccepted: baseProfiler.runPerfomanceSampleCheck(pDialog.fileUrl.toString().replace("file://", ""))
+            onAccepted: baseProfiler.runPerfomanceSampleCheck(samplingDialog.fileUrl.toString().replace("file://", ""))
+        }
+    }
+
+    FileDialog {
+        id: hwEventsDialog
+        title: "Please choose a file"
+        onAccepted:
+        {
+            onAccepted: baseProfiler.runPerfomanceEventCheck(hwEventsDialog.fileUrl.toString().replace("file://", ""))
         }
     }
 
@@ -80,8 +89,8 @@ ApplicationWindow {
             title: qsTr("Memory Profiler")
             MenuItem
             {
-                text: qsTr("&Choose file and run")
-                onTriggered: mDialog.open()
+                text: qsTr("&Memory leaks")
+                onTriggered: memDialog.open()
             }
         }
 
@@ -91,8 +100,14 @@ ApplicationWindow {
             title: qsTr("Perfomance Profiler")
             MenuItem
             {
-                text: qsTr("&Choose file and run")
-                onTriggered: pDialog.open()
+                text: qsTr("&Sampling")
+                onTriggered: samplingDialog.open()
+            }
+
+            MenuItem
+            {
+                text: qsTr("&HW-events")
+                onTriggered: hwEventsDialog.open()
             }
         }
     }

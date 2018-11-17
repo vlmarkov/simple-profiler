@@ -1,3 +1,5 @@
+#include <QTextStream>
+
 #include <include/profiler/exception.hpp>
 #include <include/profiler/perf/perf-utils.hpp>
 
@@ -18,8 +20,14 @@ RingBuffer::RingBuffer(const int fd)
 
 RingBuffer::~RingBuffer()
 {
-    ::munmap(static_cast<void*>(this->mpage_), RingBuffer::mmapSizeGet_());
-    // Do not propagate exception
+    try
+    {
+        ::munmap(static_cast<void*>(this->mpage_), RingBuffer::mmapSizeGet_());
+    }
+    catch (...)
+    {
+        ; // Do not propagate exception
+    }
 }
 
 bool RingBuffer::hasData()
@@ -70,4 +78,38 @@ RecordSample RingBuffer::sampleGet()
 unsigned RingBuffer::mmapSizeGet_()
 {
     return static_cast<unsigned>(((1U << 8) + 1) * ::sysconf(_SC_PAGESIZE));
+}
+
+FileReaderHotSpot::FileReaderHotSpot(const QString& fileName)
+{
+    this->file_.setFileName(fileName);
+    if (!this->file_.open(QIODevice::ReadOnly | QFile::Text))
+        throw Exception("Can't open file: " + this->file_.fileName());
+}
+
+FileReaderHotSpot::~FileReaderHotSpot()
+{
+    try
+    {
+        this->file_.close();
+    }
+    catch (...)
+    {
+        ; // Do not propagate exception
+    }
+}
+
+QString FileReaderHotSpot::read()
+{
+    const QRegExp regExp("[ ]");
+    const QRegExp regExpFile("[/]");
+
+    QTextStream in(&this->file_);
+
+    auto readString  = in.readAll();
+    auto stringList  = readString.split(regExpFile, QString::SkipEmptyParts);
+    auto srcFile     = stringList.value(stringList.length() - 1);
+    auto srcFileList = srcFile.split(regExp, QString::SkipEmptyParts);
+
+    return srcFileList.value(0);
 }

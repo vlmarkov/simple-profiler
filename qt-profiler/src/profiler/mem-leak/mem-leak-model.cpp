@@ -40,7 +40,7 @@ void MemLeakModel::process(const QString& pathTo)
         auto leaks = fileLeak.readMemLeaks();
         if (leaks.size() == 0)
         {
-            this->result_.add(qMakePair(IViewType::source, QString("There are no possible memory leaks")));
+            this->result_.add(qMakePair(IViewType::empty, QString("There are no possible memory leaks")));
         }
         else
         {

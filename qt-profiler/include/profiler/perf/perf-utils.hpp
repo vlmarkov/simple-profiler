@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QFile>
+
 #include <include/profiler/perf/perf-event.hpp>
 
 
@@ -41,4 +43,16 @@ struct ReadFormat
         uint64_t value;
         uint64_t id;
     } values[];
+};
+
+class FileReaderHotSpot
+{
+    private:
+        QFile file_;
+
+    public:
+        explicit FileReaderHotSpot(const QString& fileName);
+        ~FileReaderHotSpot();
+
+        QString read();
 };

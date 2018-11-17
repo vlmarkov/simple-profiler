@@ -3,7 +3,7 @@
 #include <include/profiler/i-observer.hpp>
 
 
-enum class IViewType { source, line, leak, error };
+enum class IViewType { source, line, leak, error, empty, value };
 
 
 // This is an inteface class
