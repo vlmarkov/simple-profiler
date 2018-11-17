@@ -55,13 +55,8 @@ QString MemLeakView::toHtml_(Result result) noexcept
 
                 header = false;
 
-                htmlStr += "<table border = 1 bgcolor=\"white\">";
-                htmlStr += "<tr><th>";
-                htmlStr += "**** " + (i.second) + " ****";
-                htmlStr += "</th></tr>";
-
-                htmlStr += "<tr>";
-
+                htmlStr += "<table width=\"800\" border=2 bgcolor=\"white\">";
+                htmlStr += "<tr><th align=\"left\">File: " + (i.second) + "</th></tr>";
                 break;
             }
 
@@ -92,3 +87,4 @@ QString MemLeakView::toHtml_(Result result) noexcept
 
     return htmlStr;
 }
+

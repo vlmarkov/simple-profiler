@@ -11,9 +11,7 @@ void PerfEventsProfiler::run(const QString& pathTo, BaseProfiler& baseProfiler)
         auto controller = IFactory::createController(IFactoryType::perf_event, model);
         auto view       = IFactory::createView(IFactoryType::perf_event, model, controller, baseProfiler);
 
-        controller->process(pathTo);
-
-        // View instance will emit a signal
+        controller->process(pathTo); // View instance will emit a signal
     }
     catch (Exception& exception)
     {

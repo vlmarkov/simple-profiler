@@ -13,15 +13,15 @@ SOURCES += \
     src/base-profiler.cpp \
     src/profiler/result.cpp \
     src/profiler/exception.cpp \
-    src/profiler/observable.cpp
+    src/profiler/observable.cpp \
+    src/profiler/mem-leak/mem-leak-model.cpp
 
 # Memory-leak profiler's files
 SOURCES += \
-    src/profiler/mem-leak/mem-leak-object.cpp \
     src/profiler/mem-leak/mem-leak-profiler.cpp \
     src/profiler/mem-leak/mem-leak-view.cpp \
-    src/profiler/mem-leak/mem-leak-model.cpp \
-    src/profiler/mem-leak/mem-leak-controller.cpp
+    src/profiler/mem-leak/mem-leak-controller.cpp \
+    src/profiler/mem-leak/mem-leak-utils.cpp
 
 # Perf profiler's files
 SOURCES += \
@@ -60,8 +60,8 @@ HEADERS += \
     include/profiler/mem-leak/mem-leak-view.hpp \
     include/profiler/mem-leak/mem-leak-model.hpp \
     include/profiler/mem-leak/mem-leak-controller.hpp \
-    include/profiler/mem-leak/mem-leak-object.hpp \
-    include/profiler/mem-leak/mem-leak-profiler.hpp
+    include/profiler/mem-leak/mem-leak-profiler.hpp \
+    include/profiler/mem-leak/mem-leak-utils.hpp
 
 # Perf profiler's files
 HEADERS += \

@@ -8,7 +8,5 @@ void MemLeakProfiler::run(const QString& request, BaseProfiler& baseProf)
     auto controller = IFactory::createController(IFactoryType::mem_leak, model);
     auto view       = IFactory::createView(IFactoryType::mem_leak, model, controller, baseProf);
 
-    controller->process(request);
-
-    // View instance will emit a signal
+    controller->process(request); // View instance will emit a signal
 }
