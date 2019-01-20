@@ -31,8 +31,6 @@ static void sudo_check(char const *argv0)
 
 int main(int argc, char **argv)
 {
-    int unused;
-
     sudo_check(argv[0]);
 
     if (argc < 2)
